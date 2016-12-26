@@ -1,0 +1,94 @@
+
+@sp-image-size: 88px;
+@sp-border-width: 2px;
+@sp-width: 360px;
+
+.song-playing {
+  position: relative;
+
+  img {
+    height: 48px;
+    width: 48px;
+    float: left;
+    margin-right: 8px;
+  }
+
+  img + div {
+    float: left;
+    width: ~"calc(100% - 104px)";
+  }
+}
+
+@media (min-width: 940px) {
+
+  .song-playing {
+    color: #334;
+    position: absolute;
+    width: 44%;
+    top: 24px;
+    left: 50%;
+    margin-left: -22%;
+    background-color: #fff;
+    border: @component-border;
+    height: @sp-image-size + @sp-border-width * 2;
+
+    img {
+      margin-right: 16px;
+      width: @sp-image-size;
+      height: @sp-image-size;
+    }
+
+    img + div {
+      float: left;
+      width: ~"calc(100% - 104px)";
+    }
+
+    small {
+      color: #778;
+    }
+
+    .title {
+      font-weight: bold;
+    }
+
+    .artist,
+    .album {
+      font-size: 0.9em;
+    }
+  }
+
+  // Timeline - TimeControl
+  .timeline {
+    position: relative;
+    width: 100%;
+    margin-top: 4px;
+
+    &-label {
+      position: relative;
+      top: 2px;
+    }
+
+    &-control {
+      cursor: pointer;
+      height: 24px;
+    }
+
+    &-duration {
+      position: absolute;
+      width: 100%;
+      bottom: 10px;
+      height: 4px;
+      background-color: @color-timeline-bg;
+    }
+
+    &-progress {
+      transition: all 0.1s;
+      position: absolute;
+      background-color: @color-timeline-position;
+      bottom: 10px;
+      left: 0;
+      height: 4px;
+      width: 0;
+    }
+  }
+}
