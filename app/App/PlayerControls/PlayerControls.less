@@ -1,0 +1,77 @@
+// PLAYER CONTROLS
+
+.player-controls {
+  position: absolute;
+  top: 78px;
+  right: 20px;
+  color: #000;
+  float: right;
+  display: inline-block;
+  background-color: @color-component-bg;
+  border: @component-border;
+  height: 36px;
+  transform: translateZ(0);
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.paused {
+  -webkit-animation: pulse 4s linear infinite;
+}
+
+.play-svg,
+.pause-svg {
+  fill: #ff0;
+}
+
+.next-svg,
+.previous-svg,
+.repeat-svg,
+.repeat-one-svg,
+.shuffle-svg {
+  fill: #222;
+}
+
+.icon-path {
+  fill: #fff;
+}
+
+.play,
+.previous,
+.next,
+.shuffle,
+.repeat {
+  display: inline-block;
+  cursor: pointer;
+  margin: 0 4px;
+}
+
+// Volume
+.volume {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+
+  svg {
+    height: 28px;
+    width: 69px;
+  }
+
+  .mask {
+    position: absolute;
+    height: 28px;
+    overflow: hidden;
+    top: 0;
+  }
+
+  &-inactive {
+    fill: #f0f0f0;
+  }
+
+  &-active {
+    fill: @color-active;
+  }
+}
