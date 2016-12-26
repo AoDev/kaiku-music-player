@@ -1,0 +1,49 @@
+.playlist {
+  float: right;
+  width: 34%;
+  border: @component-border;
+  background: @color-component-bg;
+  height: ~'calc(100vh - @{header-height})';
+  overflow-y: auto;
+
+  > h3 {
+    margin: 1em 16px;
+  }
+
+  .songs {
+    height: ~'calc(100% - 60px)';
+    padding: 0 16px;
+    overflow-y: auto;
+    border: @component-border;
+    font-size: 0.9em;
+
+    .playing {
+      background: @color-row-playing-bg;
+      color: @color-row-playing-text;
+    }
+
+    .selected {
+      color: @color-row-selected-text;
+      background-color: @color-row-selected-bg;
+    }
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 0;
+    list-style-type: none;
+  }
+
+  li {
+    &:extend(.noselect);
+    padding: 4px;
+    cursor: pointer;
+    background: @color-row-odd-bg;
+    color: @color-row-odd-text;
+
+    &:nth-child(2n) {
+      background: @color-row-even-bg;
+      color: @color-row-even-text;
+    }
+  }
+}
