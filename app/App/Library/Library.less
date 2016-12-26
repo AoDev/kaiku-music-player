@@ -1,0 +1,107 @@
+.library {
+  .group;
+  height: ~'calc(100vh - @{header-height})';
+  width: 66%;
+  float: left;
+  border: @component-border;
+  background: @color-component-bg;
+
+  > h3 {
+    margin-left: 16px;
+  }
+
+  .artists {
+    width: 30%;
+  }
+
+  .albums {
+    width: 33%;
+
+    img {
+      width: ~'calc(100% - 4px)';
+      margin: auto auto 4px;
+      display: block;
+    }
+
+    .playing {
+
+      &:after {
+        top: 8px;
+        right: 8px;
+      }
+    }
+  }
+
+  .songs {
+    width: 37%;
+  }
+
+  .artists,
+  .songs {
+
+    .playing {
+      padding-right: 24px;
+
+      &:after {
+        bottom: 2px;
+        right: 2px;
+      }
+    }
+  }
+
+  .artists,
+  .albums,
+  .songs {
+    float: left;
+    padding: 0 16px;
+    border: @component-border;
+    height: ~'calc(100% - 60px)';
+    overflow-y: auto;
+    overflow-x: hidden;
+    font-size: 0.9em;
+    transform: translateZ(0);
+
+    > ul {
+      margin: 0;
+      padding-left: 0;
+      list-style-type: none;
+    }
+
+    .selected {
+      color: @color-row-selected-text;
+      background-color: @color-row-selected-bg;
+    }
+
+    .playing {
+      position: relative;
+      background-color: @color-row-playing-bg;
+      color: @color-row-playing-text;
+
+      &:after {
+        content: '';
+        position: absolute;
+        background-image: data-uri('image/svg+xml;charset=UTF-8', '../../images/music-note.svg');
+        background-size: contain;
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+  li {
+    &:extend(.noselect);
+    padding: 4px;
+    cursor: pointer;
+    background: @color-row-even-bg;
+    color: @color-row-even-text;
+
+    &:nth-child(2n) {
+      color: @color-row-odd-text;
+      background: @color-row-odd-bg;
+    }
+  }
+}
+
+.search-help {
+  font-size: 0.8em;
+}
