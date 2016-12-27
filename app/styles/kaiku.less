@@ -1,0 +1,54 @@
+#root {
+  height: 100%;
+}
+
+#kaiku-wrapper {
+  height: 100%;
+}
+
+.kaiku {
+  height: 100%;
+}
+
+.main-header {
+  background: @header-bg-color;
+  color: #fff;
+  position: fixed;
+  padding: 16px;
+  height: @header-height;
+  width: 100%;
+  top: 0;
+  left: 0;
+
+  h1 {
+    float: left;
+    display: inline-block;
+    margin: 0;
+  }
+}
+
+.main-content {
+  position: relative;
+  height: calc(~'100vh - @{header-height}');
+}
+
+.logo {
+  position: absolute;
+  left: 20px;
+  top: 40px;
+  height: 50px;
+  width: 100px;
+}
+
+@skin: 'theMetal';
+
+@import "variables";
+@import "skins/@{skin}/variables.less";
+@import "../framework/styles/index.less";
+@import "../App/PlayerControls/PlayerControls.less";
+@import "../App/SearchBar/SearchBar.less";
+@import "../App/Playlist/Playlist.less";
+@import "../App/Library/Library.less";
+@import "../App/Settings/Settings.less";
+@import "../App/SongPlaying/SongPlaying.less";
+@import "skins/@{skin}/index.less";
