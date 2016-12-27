@@ -1,0 +1,26 @@
+// Scrollbars
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: @color-scroll-track;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 3px;
+  border-radius: 10px;
+  background: @color-scroll-thumb;
+
+  &:hover {
+    background: @color-active;
+  }
+}
+
+::-webkit-scrollbar-thumb:window-inactive { /* stylelint-disable */
+  background: @color-scroll-thumb-inactive;
+}
