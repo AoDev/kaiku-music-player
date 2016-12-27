@@ -1,0 +1,52 @@
+
+.library {
+
+  .albums,
+  .artists,
+  .songs {
+
+    > ul:focus {
+      outline-width: 0;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  .albums {
+
+    li {
+      margin-bottom: 16px;
+      box-shadow: 0 5px 20px #666;
+
+      &.selected {
+        position: relative;
+        top: 2px;
+        box-shadow: 0 0 5px #666;
+      }
+    }
+  }
+
+  .selected {
+
+    .search-help {
+      color: #666;
+    }
+  }
+
+  .playing {
+
+    .search-help {
+      color: #ddd;
+    }
+  }
+
+  .selected.playing {
+    border: 1px solid #dbdbdb;
+    padding: 3px;
+  }
+}
+
+.search-help {
+  font-size: 0.8em;
+  color: #ccc;
+}
+

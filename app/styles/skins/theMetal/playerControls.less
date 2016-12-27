@@ -1,0 +1,52 @@
+.player-controls {
+  padding: 2px 0 2px 4px;
+  height: 28px;
+  background-color: rgba(48, 48, 48, 0.7);
+}
+
+.song-playing {
+  background-color: transparent;
+  color: #f5f5f5;
+
+  img {
+    border: 1px solid #666;
+    border-radius: 50%;
+  }
+}
+
+.icon-path {
+  fill: #fff;
+}
+
+// Play / Pause and current volume are always green
+.control-active,
+.volume .mask,
+.play,
+.pause {
+
+  .icon-path {
+    fill: @color-green;
+  }
+}
+
+.next,
+.previous,
+.shuffle,
+.play,
+.repeat {
+
+  > svg {
+    height: 20px;
+    width: 20px;
+  }
+}
+
+.volume {
+  margin-left: 32px;
+
+  svg,
+  .mask {
+    height: 20px;
+    width: 59px;
+  }
+}
