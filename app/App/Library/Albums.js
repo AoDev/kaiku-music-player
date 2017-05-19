@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import PropTypes from 'prop-types'
+import React, {Component} from 'react'
 import _ from 'lodash'
 import {COVER_FOLDER, COVER_DEFAULT} from '../../lib/mediaLibrary'
 import {observer, inject} from 'mobx-react'
