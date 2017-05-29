@@ -18,11 +18,12 @@ Built on top of Electron (Chromium + Node.js), React and Mobx.
 ## How to get it?
 
 Currently the app must be built on your computer.  
-Have a look at "Creating a release" in Contributing.
+Have a look at "Creating a release" in Contributing section.
 
 ## Contributing
 
-
+Do you want to help? :)
+Check the [contributing guidelines](https://github.com/AoDev/kaiku-music-player/blob/master/CONTRIBUTING.md).
 
 ## This project history
 
