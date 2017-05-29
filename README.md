@@ -15,6 +15,12 @@ Built on top of Electron (Chromium + Node.js), React and Mobx.
 - __Get music information from online services__ like last.fm API.
 - __Radio mode__. Stream some song to your friends.
 
+## Quick peek
+
+[![Kaiku screenshot](http://img.youtube.com/vi/LakkaR4O_ww/maxresdefault.jpg)](https://www.youtube.com/watch?v=LakkaR4O_ww "Kaiku Music Player ")
+
+Click the image to watch a 1 minute video with the player working.
+
 ## How to get it?
 
 Currently the app must be built on your computer.  
