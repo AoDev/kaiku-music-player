@@ -26,6 +26,19 @@ Click the image to watch a 1 minute video with the player working.
 Currently the app must be built on your computer.  
 Have a look at "Creating a release" in Contributing section.
 
+## Current status
+
+I just open sourced it. It works pretty well in general but has a few bugs and limitations that I want to fix first before considering it to be OK.
+
+- I only tested and developed it for OSX. I don't focus on other platforms for now.
+
+### Recommendations and limitations
+
+- Although you can add multiple folders to scan, better scan a unique folder.
+- When you scan, the current library will be emptied and replaced.
+  (The library needs a rewrite and a different strategy to be more robust and flexible).
+- After OSX gets into sleep, sometimes the player will play a song twice at the same time when you play again. You need to restart the player.
+
 ## Contributing
 
 Do you want to help? :)
@@ -58,6 +71,3 @@ This isn't yet an end-user ready version. But I've been wanting to publish it fo
 So I have rewritten the UI with ES6 and mobx and will continue to work on it.
 
 I hope some people will get interested ;)
-
-
-
