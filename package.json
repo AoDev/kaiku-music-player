@@ -96,7 +96,8 @@
     "player",
     "electron",
     "react",
-    "node"
+    "node",
+    "mobx"
   ],
   "homepage": "https://github.com/AoDev/kaiku-music-player",
   "devDependencies": {
