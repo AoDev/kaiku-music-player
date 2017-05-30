@@ -24,7 +24,7 @@ Click the image to watch a 1 minute video with the player working.
 ## How to get it?
 
 Currently the app must be built on your computer.  
-Have a look at "Creating a release" in Contributing section.
+Have a look at "Creating a release" in [Contributing](https://github.com/AoDev/kaiku-music-player/blob/master/CONTRIBUTING.md) section.
 
 ## Current status
 
@@ -34,15 +34,17 @@ I just open sourced it. It works pretty well in general but has a few bugs and l
 
 ### Recommendations and limitations
 
+- Currently the player expects audio tags in your files to build the library correctly.
 - Although you can add multiple folders to scan, better scan a unique folder.
 - When you scan, the current library will be emptied and replaced.
   (The library needs a rewrite and a different strategy to be more robust and flexible).
-- After OSX gets into sleep, sometimes the player will play a song twice at the same time when you play again. You need to restart the player.
+- After OSX gets into sleep or you lock the screen, sometimes the player will play two songs at the same time when you play again. Often, you need to restart the player.
 
 ## Contributing
 
 Do you want to help? :)
 Check the [contributing guidelines](https://github.com/AoDev/kaiku-music-player/blob/master/CONTRIBUTING.md).
+There is also a summary of the [app architecture](https://github.com/AoDev/kaiku-music-player/blob/master/ARCHITECTURE.md).
 
 ## This project history
 
