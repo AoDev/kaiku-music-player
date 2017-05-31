@@ -1,3 +1,5 @@
+<img align="right" src="https://github.com/AoDev/kaiku-music-player/blob/master/app/images/kaiku-logo.png" width="128" alt="Kaiku logo"/>
+
 # Kaiku Music Player
 
 "Kaiku" means "echo" in Finnish and it is a music player inspired by Winamp.
@@ -55,6 +57,8 @@ A brief recap of the why and how this player was built.
 #### Winamp nostalgic
 
 I built the first version of this player at the beginning of 2015 to have an experience similar to the one I had with Winamp. I used that opportunity to learn React and node-webkit.
+
+I even gave a talk about [building desktop apps with web technologies](https://github.com/AoDev/desktop-apps-with-html-nodejs) where I showed Kaiku, in a meetup in Budapest.
 
 I have been using Winamp forever.  
 I wasn't happy with the players available in the Mac ecosystem. Especially that now everything goes "in the cloud", people have moved to services like Spotify.
