@@ -13,7 +13,7 @@ function save (config) {
   return new Promise((resolve, reject) => {
     fs.writeFile(configPath, config, (err) => {
       if (err) {
-        reject(err)
+        return reject(err)
       }
       resolve()
     })
@@ -31,7 +31,7 @@ function readLocalConfig () {
         if (err.code === 'ENOENT') {
           return resolve({})
         }
-        reject(err)
+        return reject(err)
       }
       resolve(JSON.parse(_config))
     })
