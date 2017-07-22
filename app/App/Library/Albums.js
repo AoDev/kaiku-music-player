@@ -81,8 +81,10 @@ export class Albums extends Component {
    * When rendered, scroll the albums list to a given album if necessary
    */
   componentDidUpdate () {
-    if (this.props.library.albumInSight) {
-      Albums.jumpToAlbum(this.albumsDomNode, this.props.library.albumInSight)
+    const {library} = this.props
+    if (library.albumInSight) {
+      Albums.jumpToAlbum(this.albumsDomNode, library.albumInSight)
+      library.clearAlbumInSight()
     }
   }
 

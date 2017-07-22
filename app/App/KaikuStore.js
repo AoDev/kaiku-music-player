@@ -484,6 +484,10 @@ class Library {
     this.filter = filter.length > 2 ? new RegExp(utf8Filter, 'i') : null
   }
 
+  @action.bound clearAlbumInSight () {
+    this.albumInSight = null
+  }
+
   /**
    * Completely reset the library
    * @return {[type]} [description]
