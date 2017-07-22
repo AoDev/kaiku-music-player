@@ -446,6 +446,18 @@ class Library {
     this.songSelected = this._songs[songId - 1]
   }
 
+  /**
+   * Clear artist, album, song selected and in sight.
+   * Mainly used when search filter is updated.
+   */
+  @action.bound unselectAll () {
+    this.artistSelected = null
+    this.albumSelected = null
+    this.songSelected = null
+    this.artistInSight = null
+    this.albumInSight = null
+  }
+
   // This list is there to be able to ignore variants of characters in searches.
   static charRanges = {
     a: '[aáäâàå]',
@@ -458,51 +470,18 @@ class Library {
   }
 
   /**
-   * There must always be an album or artist selected
+   * The filter is set through user input, but the actual value stored is a
+   * the user input as a regex that also ignore variants of characters. (eéêëè...)
+   *
+   * Note: the actual user input value is stored in the state of the searchbar.
    * @param {String} filter
    */
   @action.bound setSearchFilter (filter) {
-    const currentFilter = this.filter
     const utf8Filter = Array.prototype.map.call(filter, (char) => {
       return Library.charRanges[char] ? Library.charRanges[char] : char
     }).join('')
-    const newFilter = new RegExp(utf8Filter, 'i')
-    const currentFilterLength = currentFilter ? currentFilter.source.length : 0
-    const isMore = utf8Filter.length > currentFilterLength
 
-    if (isMore) {
-      if (filter.length > 2) {
-        this.filter = newFilter
-        this.artistSelected = null
-        this.albumSelected = null
-        this.songSelected = null
-        this.artistInSight = null
-        this.albumInSight = null
-      }
-    }
-    else {
-      if (this.albumSelected) {
-        this.albumInSight = this.albumSelected._id
-      }
-      else if (this.artistSelected) {
-        this.artistInSight = this.artistSelected._id
-      }
-      else {
-        this.artistSelected = this._artists[0]
-        this.artistInSight = this.artistSelected._id
-      }
-
-      if (filter.length > 2) {
-        this.filter = newFilter
-      }
-      else {
-        if (this.albumSelected) {
-          this.artistSelected = this._artists[this.albumSelected.artistID - 1]
-          this.artistInSight = this.artistSelected._id
-        }
-        this.filter = null
-      }
-    }
+    this.filter = filter.length > 2 ? new RegExp(utf8Filter, 'i') : null
   }
 
   /**
@@ -522,6 +501,39 @@ class Library {
     mediaLibrary.clearLibrary()
     .then(this.resetStoreLibrary)
     .catch(errorHandler)
+  }
+
+  constructor () {
+    /**
+     * Watch the search filter and focus / unfocus items in the library
+     * If the filter is less precise (user is deleting), then if there is
+     * something currently selected, it should stay selected.
+     */
+    this.observeDisposer = mobx.observe(this, 'filter', (change) => {
+      const previousFilterLength = change.oldValue == null ? 0 : change.oldValue.source.length
+      const newFilterLength = change.newValue == null ? 0 : change.newValue.source.length
+      const isMore = newFilterLength > previousFilterLength
+      const wasCleared = newFilterLength === 0 && previousFilterLength >= 2
+
+      if (isMore) {
+        this.unselectAll()
+      }
+
+      if (wasCleared) {
+        if (this.songSelected) {
+          this.albumSelected = this._albums[this.songSelected.albumID - 1]
+        }
+
+        if (this.albumSelected) {
+          this.artistSelected = this._artists[this.albumSelected.artistID - 1]
+          this.albumInSight = this.albumSelected._id
+        }
+
+        if (this.artistSelected) {
+          this.artistInSight = this.artistSelected._id
+        }
+      }
+    })
   }
 }
 
