@@ -53,7 +53,7 @@ function init () {
   kaikuDB = new WebSQL({
     name: 'kaiku',
     description: 'Kaiku database',
-    estimatedSize: 10 * 1024 * 1024
+    estimatedSize: 16 * 1024 * 1024
   })
   return Promise.all([
     kaikuDB.query(sql.createSongsTable),
