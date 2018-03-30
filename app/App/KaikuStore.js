@@ -294,14 +294,10 @@ class Library {
     const albumSelectedId = this.albumSelected ? this.albumSelected._id : null
 
     if (albumSelectedId) {
-      return this._songs.filter(function (song) {
-        return song.albumID === albumSelectedId
-      })
+      return this.getAlbumSongs(albumSelectedId)
     }
     else if (artistSelectedId) {
-      return this._songs.filter(function (song) {
-        return song.artistID === artistSelectedId
-      })
+      return this.getArtistSongs(artistSelectedId)
     }
     else if (this.filter) {
       let filter = this.filter
@@ -325,8 +321,24 @@ class Library {
     const songs = this._songs.filter((song) => {
       return song.artistID === artistID
     })
+
     if (ordered) {
-      return _.sortBy(songs, ['albumID', 'trackNr'])
+      let albums = songs.reduce((albums, song) => {
+        if (!albums[song.albumID]) {
+          albums[song.albumID] = this._albums[song.albumID - 1]
+        }
+        return albums
+      }, {})
+
+      const songsByAlbum = _.groupBy(songs, 'albumID')
+
+      return (
+        _.orderBy(albums, ['year'], 'ASC')
+          .map((album) => album._id)
+          .reduce((artistSongs, albumID) => {
+            return artistSongs.concat(_.sortBy(songsByAlbum[albumID], 'trackNr'))
+          }, [])
+      )
     }
     return songs
   }

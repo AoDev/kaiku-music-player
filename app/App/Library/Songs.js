@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import {observer, inject} from 'mobx-react'
-import _ from 'lodash'
 import libraryContextMenus from './libraryContextMenus'
 
 export class Songs extends Component {
@@ -24,9 +23,8 @@ export class Songs extends Component {
   static listSongsToDisplay ({songPlaying, library}) {
     const songPlayingId = songPlaying ? songPlaying._id : null
     const needDetails = library.filter && library.artistSelected === null
-    const songs = _.sortBy(library.songs, ['albumID', 'trackNr'])
 
-    return songs.map((song) => {
+    return library.songs.map((song) => {
       var cssClasses = null
 
       if (library.songSelected === song) {
