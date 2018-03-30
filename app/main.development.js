@@ -1,6 +1,15 @@
 const electron = require('electron')
-const {app, BrowserWindow, globalShortcut, Menu} = electron
+const {app, BrowserWindow, globalShortcut, Menu, ipcMain} = electron
 const windowMenu = require('./windowMenu')
+const main = require('./main')
+const {mediaLibrary} = main
+
+ipcMain.on('getSongsDuration', (event, arg) => {
+  mediaLibrary.refreshSongsDuration(arg)
+    .then((songs) => {
+      event.sender.send('gotSongsDuration', songs)
+    })
+})
 
 let menu
 let mainWindow = null

@@ -2,6 +2,7 @@ import * as mobx from 'mobx'
 import mediaLibrary from '../lib/mediaLibrary'
 import musicPlayer from '../lib/musicPlayer'
 import _ from 'lodash'
+import {ipcRenderer} from 'electron'
 
 const {observable, computed, action} = mobx
 
@@ -62,6 +63,10 @@ class Playlist {
     })
     this.songs = songsInPlaylist
     musicPlayer.setPlaylist(songsInPlaylist)
+  }
+
+  @action.bound set (prop, value) {
+    this[prop] = value
   }
 }
 
@@ -603,14 +608,24 @@ export default class KaikuStore {
     this.playlist.addSongs([song])
   }
 
+  @action.bound playSongs (songs) {
+    this.playlist.setSongs(songs)
+    musicPlayer.play()
+
+    const shouldGetDuration = songs.some((song) => song.duration === 0)
+
+    if (shouldGetDuration) {
+      ipcRenderer.send('getSongsDuration', songs)
+    }
+  }
+
   /**
    * Fill the playlist with all the songs of the artist and start playing
    * @param  {Number} artistID
    */
   @action.bound playArtist (artistID) {
     const songs = this.library.getArtistSongs(artistID)
-    this.playlist.setSongs(songs)
-    musicPlayer.play()
+    this.playSongs(songs)
   }
 
   /**
@@ -619,8 +634,7 @@ export default class KaikuStore {
    */
   @action.bound playAlbum (albumID) {
     const songs = this.library.getAlbumSongs(albumID)
-    this.playlist.setSongs(songs)
-    musicPlayer.play()
+    this.playSongs(songs)
   }
 
   /**
@@ -629,8 +643,7 @@ export default class KaikuStore {
    */
   @action.bound playSong (songID) {
     const songs = [this.library._songs[songID - 1]]
-    this.playlist.setSongs(songs)
-    musicPlayer.play()
+    this.playSongs(songs)
   }
 
   @action.bound setSongPlaying (songID) {
@@ -696,5 +709,10 @@ export default class KaikuStore {
      * Setup some actions that should happen based on the player lib events.
      */
     musicPlayer.on('play', this.setSongPlaying)
+
+    ipcRenderer.on('gotSongsDuration', (event, updatedSongs) => {
+      this.playlist.set('songs', updatedSongs)
+      mediaLibrary.updateSongs(updatedSongs) // Save in DB (fire and forget)
+    })
   }
 }

@@ -5,6 +5,17 @@ import playlistContextMenu from './playlistContextMenu'
 
 export class Playlist extends Component {
   /**
+   * Generate a string for a time in seconds. like 6:30
+   * @param  {Number} seconds
+   * @return {String}
+   */
+  static convertTime (seconds) {
+    var minutes = Math.floor(seconds / 60)
+    var _seconds = Math.floor(seconds % 60)
+    return `${minutes}:${_seconds < 10 ? '0' : ''}${_seconds}`
+  }
+
+  /**
    * Generate the list of songs to be displayed
    * @return {Array} Array of songs
    */
@@ -25,10 +36,27 @@ export class Playlist extends Component {
 
       return (
         <li key={`${song._id}-${index}`} data-song-id={song._id} data-index={index} className={cssClasses}>
-          {song.trackNr + '. ' + song.title}
+          <span className="playlist-title">{song.trackNr + '. ' + song.title}</span>
+          <span className="playlist-duration">{song.duration > 0 ? Playlist.convertTime(song.duration) : ''}</span>
         </li>
       )
     })
+  }
+
+  static getSongIndex (clickEvent) {
+    let dataset = clickEvent.target.dataset
+    if (typeof dataset.index === 'undefined') {
+      dataset = clickEvent.target.parentNode.dataset
+    }
+    return parseInt(dataset.index, 10)
+  }
+
+  static getSongId (clickEvent) {
+    let dataset = clickEvent.target.dataset
+    if (typeof dataset.songId === 'undefined') {
+      dataset = clickEvent.target.parentNode.dataset
+    }
+    return parseInt(dataset.songId, 10)
   }
 
   constructor (props) {
@@ -39,12 +67,11 @@ export class Playlist extends Component {
   }
 
   playSong (event) {
-    const index = parseInt(event.target.dataset.index, 10)
-    this.props.playSongFromPlaylist(index)
+    this.props.playSongFromPlaylist(Playlist.getSongIndex(event))
   }
 
   createMenu (event) {
-    const songID = parseInt(event.target.dataset.songId, 10)
+    const songID = Playlist.getSongId(event)
     const actions = {
       removeFromPlaylist: this.props.playlist.removeFromPlaylist
     }
@@ -53,7 +80,7 @@ export class Playlist extends Component {
   }
 
   setSongSelectedInPlaylist (event) {
-    const songID = parseInt(event.target.dataset.songId, 10)
+    const songID = Playlist.getSongId(event)
     this.props.playlist.setSongsSelected([songID])
   }
 

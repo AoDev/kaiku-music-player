@@ -23,7 +23,7 @@ export const COVER_DEFAULT = './images/default-cover.svg'
 const sql = {
   createAlbumsTable: 'CREATE TABLE IF NOT EXISTS albums (_id INTEGER PRIMARY KEY, title VARCHAR, artistID INTEGER, cover VARCHAR, year INTEGER)',
   createArtistsTable: 'CREATE TABLE IF NOT EXISTS artists (_id INTEGER PRIMARY KEY, name VARCHAR, lastUpdated VARCHAR)',
-  createSongsTable: 'CREATE TABLE IF NOT EXISTS songs (_id INTEGER PRIMARY KEY, title VARCHAR, artistID INTEGER, albumID INTEGER, trackNr INTEGER, filePath VARCHAR)',
+  createSongsTable: 'CREATE TABLE IF NOT EXISTS songs (_id INTEGER PRIMARY KEY, title VARCHAR, artistID INTEGER, albumID INTEGER, trackNr INTEGER, filePath VARCHAR, duration REAL DEFAULT 0)',
   findAlbumById: 'SELECT _id, title, artistID, cover, year FROM albums WHERE _id = ?',
   findAlbumFirstSong: 'SELECT _id, filePath FROM songs WHERE albumID = ? LIMIT 1',
   findAlbums: 'SELECT _id, title, artistID, cover, year FROM albums ORDER BY _id',
@@ -31,14 +31,14 @@ const sql = {
   findArtistAlbums: 'SELECT _id, title, artistID, cover, year FROM albums WHERE artistID = ?',
   findArtistById: 'SELECT _id, name, lastUpdated FROM artists WHERE _id = ?',
   findArtists: 'SELECT _id, name, lastUpdated FROM artists ORDER BY _id',
-  findSongs: 'SELECT _id, title, artistID, albumID, trackNr, filePath FROM songs ORDER BY _id',
-  findSong: 'SELECT _id, title, artistID, albumID, trackNr, filePath FROM songs WHERE _id = ?',
+  findSongs: 'SELECT _id, title, artistID, albumID, trackNr, filePath, duration FROM songs ORDER BY _id',
+  findSong: 'SELECT _id, title, artistID, albumID, trackNr, filePath, duration FROM songs WHERE _id = ?',
   saveAlbum: 'INSERT INTO albums (title, artistID, cover, year) VALUES (?, ?, ?, ?)',
   saveArtist: 'INSERT INTO artists (name) VALUES (?)',
-  saveSong: 'INSERT INTO songs (title, artistID, albumID, trackNr, filePath) VALUES (?, ?, ?, ?, ?)',
+  saveSong: 'INSERT INTO songs (title, artistID, albumID, trackNr, filePath, duration) VALUES (?, ?, ?, ?, ?, ?)',
   updateAlbum: 'UPDATE albums SET title = ?, artistID = ?, cover = ?, year = ? WHERE _id = ?',
   updateArtist: 'UPDATE artists SET name = ?, lastUpdated = ? WHERE _id = ?',
-  updateSong: 'UPDATE songs SET title = ?, artistID = ?, albumID = ?, trackNr = ?, filePath = ? WHERE _id = ?'
+  updateSong: 'UPDATE songs SET title = ?, artistID = ?, albumID = ?, trackNr = ?, filePath = ?, duration = ? WHERE _id = ?'
 }
 
 var kaikuDB
@@ -160,7 +160,8 @@ function saveToLibrary (metadata, next) {
     artistID: artist._id,
     albumID: album._id,
     trackNr: metadata.track.no || 0,
-    filePath: metadata.filePath
+    filePath: metadata.filePath,
+    duration: 0,
   })
   songInc++
 
@@ -191,7 +192,7 @@ function scan (songsFolders, onScanComplete) {
         onScanComplete(null, library)
         library._artists.forEach((artist) => saveArtistToDb([artist.name]))
         library._albums.forEach((album) => saveAlbumToDb([album.title, album.artistID, album.cover, album.year]))
-        library._songs.forEach((song) => saveSongToDb([song.title, song.artistID, song.albumID, song.trackNr, song.filePath]))
+        library._songs.forEach((song) => saveSongToDb([song.title, song.artistID, song.albumID, song.trackNr, song.filePath, song.duration]))
       })
     }
   }
@@ -233,9 +234,10 @@ function refreshSongData (songID) {
     .then((results) => {
       const song = results[0]
       const metadata = results[1]
+      console.log(metadata)
       song.title = metadata.title
       song.trackNr = metadata.track.no || 0
-      kaikuDB.query(sql.updateSong, [song.title, song.artistID, song.albumID, song.trackNr, song.filePath, songID])
+      kaikuDB.query(sql.updateSong, [song.title, song.artistID, song.albumID, song.trackNr, song.filePath, song.duration, songID])
       return song
     })
     .catch((err) => {
@@ -246,7 +248,7 @@ function refreshSongData (songID) {
 function readMetadata (filePath) {
   return new Promise(function (resolve, reject) {
     const stream = fs.createReadStream(filePath)
-    mm(stream, function (err, metadata) {
+    mm(stream, {duration: true}, function (err, metadata) {
       if (err) {
         reject(err)
       }
@@ -256,6 +258,15 @@ function readMetadata (filePath) {
       }
     })
   })
+}
+
+async function updateSongs (updatedSongs) {
+  return Promise.all(updatedSongs.map((song, index) =>
+    kaikuDB.query(
+      sql.updateSong,
+      [song.title, song.artistID, song.albumID, song.trackNr, song.filePath, song.duration, song._id]
+    )
+  ))
 }
 
 /**
@@ -300,18 +311,19 @@ function stopScan () {
 }
 
 export default {
-  init,
-  findArtists,
-  findAlbums,
-  findSongs,
-  scanner,
-  scan,
-  stopScan,
   clearLibrary,
+  COVER_DEFAULT,
+  COVER_FOLDER,
+  findAlbums,
+  findArtists,
+  findSongs,
+  init,
   refreshAlbumData,
   refreshArtistData,
   refreshArtistSongs,
   refreshSongData,
-  COVER_FOLDER,
-  COVER_DEFAULT
+  scan,
+  scanner,
+  stopScan,
+  updateSongs,
 }
