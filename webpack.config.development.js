@@ -4,18 +4,19 @@
  * https://webpack.github.io/docs/hot-module-replacement-with-webpack.html
  */
 
-import webpack from 'webpack'
-import merge from 'webpack-merge'
-import baseConfig from './webpack.config.base'
+const webpack = require('webpack')
+const merge = require('webpack-merge')
+const baseConfig = require('./webpack.config.base')
 
 const port = process.env.PORT || 3000
 
-export default merge(baseConfig, {
-  devtool: 'inline-source-map',
+module.exports = merge(baseConfig, {
+  devtool: 'source-map',
 
   entry: [
+    'react-hot-loader/patch',
     `webpack-hot-middleware/client?path=http://localhost:${port}/__webpack_hmr`,
-    'babel-polyfill',
+    '@babel/polyfill',
     './app/index'
   ],
 
@@ -23,17 +24,8 @@ export default merge(baseConfig, {
     publicPath: `http://localhost:${port}/dist/`
   },
 
-  module: {
-    rules: [
-      { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
-      { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
-      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream' },
-      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file' },
-      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml' }
-    ]
-  },
-
   plugins: [
+    new webpack.NamedModulesPlugin(),
     // https://webpack.github.io/docs/hot-module-replacement-with-webpack.html
     new webpack.HotModuleReplacementPlugin(),
 

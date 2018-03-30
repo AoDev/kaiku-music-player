@@ -152,10 +152,10 @@ export class Settings extends Component {
                     <h3>{library.isEmpty ? 'Find songs' : 'Refresh library'}</h3>
                     <p>Search for songs in your computer.</p>
                     {scan.inProgress
-                    ? <button className="space-right-1" onClick={this.cancelScan}>
+                      ? <button className="space-right-1" onClick={this.cancelScan}>
                         Cancel scan
                       </button>
-                    : <button className="space-right-1" onClick={this.scanForSongs}>
+                      : <button className="space-right-1" onClick={this.scanForSongs}>
                         Find songs
                       </button>
                     }

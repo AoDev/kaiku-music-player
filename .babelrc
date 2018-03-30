@@ -1,22 +1,43 @@
 {
-	"presets": [
-    ["env", {"targets": { "node": 6 }, "useBuiltIns": true }],
-    "stage-0",
-    ["es2015", { "modules": false }],
-    "react"
+  "plugins": [
+    "@babel/plugin-proposal-decorators",
+    [
+      "@babel/plugin-proposal-class-properties",
+      {
+        "loose": true
+      }
+    ]
   ],
-  "plugins": ["transform-decorators-legacy", "transform-class-properties"],
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "chrome": 58,
+          "electron": "1.8.3"
+        },
+        "modules": false,
+        "useBuiltIns": "usage"
+      }
+    ],
+    "@babel/preset-stage-1",
+    "@babel/preset-react"
+  ],
   "env": {
-    "production": {
-      "presets": ["react-optimize"],
-      "plugins": ["babel-plugin-dev-expression"]
-    },
+    "production": {},
     "development": {
-      "presets": ["react-hmre"]
+      "plugins": [
+        "react-hot-loader/babel"
+      ]
     },
     "test": {
-      "plugins": [
-        ["webpack-loaders", { "config": "webpack.config.test.js", "verbose": false }]
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "modules": "commonjs"
+          }
+        ]
       ]
     }
   }

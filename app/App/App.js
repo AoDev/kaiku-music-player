@@ -8,7 +8,7 @@ import Library from './Library'
 import Playlist from './Playlist'
 import Settings from './Settings'
 import SearchBar from './SearchBar'
-import {Box} from 'UI'
+import {Box} from 'ui-framework'
 
 export class App extends Component {
   componentDidMount () {
@@ -29,16 +29,16 @@ export class App extends Component {
         </div>
 
         <div className="main-content">
-        {library.isEmpty
-          ? <div className="panel shadow-bottom">
+          {library.isEmpty
+            ? <div className="panel shadow-bottom">
               <FindSongs showSettings={store.settings.show}/>
             </div>
 
-          : <div>
+            : <div>
               <Library/>
               <Playlist/>
             </div>
-        }
+          }
         </div>
 
         <Box visible={store.settings.visible}>

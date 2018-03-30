@@ -1,4 +1,4 @@
-import _ from 'lodash'
+const _ = require('lodash')
 
 function createTemplate (mainWindow) {
   if (!_.isObject(mainWindow)) {
@@ -145,6 +145,6 @@ function createTemplate (mainWindow) {
   return template
 }
 
-export default {
+module.exports = {
   createTemplate
 }

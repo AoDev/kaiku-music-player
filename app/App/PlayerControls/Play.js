@@ -11,9 +11,9 @@ export default function Play ({playPause, isPlaying}) {
   const cssClasses = isPlaying ? 'play unselectable' : 'play paused unselectable'
 
   return (
-   <span className={cssClasses} onClick={playPause}>
-     {isPlaying ? pauseIcon : playIcon}
-   </span>
+    <span className={cssClasses} onClick={playPause}>
+      {isPlaying ? pauseIcon : playIcon}
+    </span>
   )
 }
 

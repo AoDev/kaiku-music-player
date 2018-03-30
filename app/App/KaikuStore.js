@@ -1,7 +1,9 @@
-import mobx, {observable, computed, action} from 'mobx'
+import * as mobx from 'mobx'
 import mediaLibrary from '../lib/mediaLibrary'
 import musicPlayer from '../lib/musicPlayer'
 import _ from 'lodash'
+
+const {observable, computed, action} = mobx
 
 /**
  * Dummy error handler until something more useful is done
@@ -359,19 +361,19 @@ class Library {
    */
   @action.bound loadLibraryFromDb () {
     mediaLibrary.findArtists()
-    .then(this.setArtists)
-    .catch(errorHandler)
+      .then(this.setArtists)
+      .catch(errorHandler)
 
     mediaLibrary.findAlbums()
-    .then(this.setAlbums)
-    .catch(errorHandler)
+      .then(this.setAlbums)
+      .catch(errorHandler)
 
     mediaLibrary.findSongs()
-    .then(this.setSongs)
-    .then(mobx.action(() => {
-      this.isLoaded = true
-    }))
-    .catch(errorHandler)
+      .then(this.setSongs)
+      .then(mobx.action(() => {
+        this.isLoaded = true
+      }))
+      .catch(errorHandler)
   }
 
   /**
@@ -384,22 +386,22 @@ class Library {
    */
   @action.bound refreshArtist (artist) {
     return mediaLibrary
-    .refreshArtistData(artist._id)
-    .then(mobx.action('artist.lastUpdated', (_artist) => {
-      artist.lastUpdated = _artist.lastUpdated
-      return artist
-    }))
-    .then(mediaLibrary.findAlbums)
-    .then(this.setAlbums)
-    .catch(errorHandler)
+      .refreshArtistData(artist._id)
+      .then(mobx.action('artist.lastUpdated', (_artist) => {
+        artist.lastUpdated = _artist.lastUpdated
+        return artist
+      }))
+      .then(mediaLibrary.findAlbums)
+      .then(this.setAlbums)
+      .catch(errorHandler)
   }
 
   @action.bound refreshSongData (songID) {
     return mediaLibrary
-    .refreshSongData(songID)
-    .then(mediaLibrary.findSongs)
-    .then(this.setSongs)
-    .catch(errorHandler)
+      .refreshSongData(songID)
+      .then(mediaLibrary.findSongs)
+      .then(this.setSongs)
+      .catch(errorHandler)
   }
 
   /**
@@ -503,8 +505,8 @@ class Library {
 
   @action.bound clearLibrary () {
     mediaLibrary.clearLibrary()
-    .then(this.resetStoreLibrary)
-    .catch(errorHandler)
+      .then(this.resetStoreLibrary)
+      .catch(errorHandler)
   }
 
   constructor () {

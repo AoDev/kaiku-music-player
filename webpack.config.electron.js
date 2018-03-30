@@ -2,24 +2,23 @@
  * Build config for electron 'Main Process' file
  */
 
-import webpack from 'webpack'
-import merge from 'webpack-merge'
-import BabiliPlugin from 'babili-webpack-plugin'
-import baseConfig from './webpack.config.base'
+const webpack = require('webpack')
+const merge = require('webpack-merge')
+const baseConfig = require('./webpack.config.base')
 
-export default merge(baseConfig, {
+module.exports = merge(baseConfig, {
   devtool: 'source-map',
 
-  entry: ['babel-polyfill', './app/main.development'],
+  entry: ['@babel/polyfill', './app/main.development'],
 
   // 'main.js' in root
   output: {
     path: __dirname,
-    filename: './app/main.js'
+    filename: './app/main.dist.js'
   },
 
   plugins: [
-    new BabiliPlugin(),
+    // new BabiliPlugin(),
     // Add source map support for stack traces in node
     // https://github.com/evanw/node-source-map-support
     // new webpack.BannerPlugin(

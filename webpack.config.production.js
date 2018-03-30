@@ -2,19 +2,18 @@
  * Build config for electron 'Renderer Process' file
  */
 
-import path from 'path'
-import webpack from 'webpack'
-import ExtractTextPlugin from 'extract-text-webpack-plugin'
-import merge from 'webpack-merge'
-import HtmlWebpackPlugin from 'html-webpack-plugin'
-import BabiliPlugin from 'babili-webpack-plugin'
-import baseConfig from './webpack.config.base'
+const path = require('path')
+const webpack = require('webpack')
+const merge = require('webpack-merge')
+const baseConfig = require('./webpack.config.base')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
-export default merge(baseConfig, {
+module.exports = merge(baseConfig, {
   devtool: 'cheap-module-source-map',
 
   entry: [
-    'babel-polyfill',
+    '@babel/polyfill',
     './app/index'
   ],
 
@@ -25,13 +24,6 @@ export default merge(baseConfig, {
 
   module: {
     rules: [
-      // Fonts
-      { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
-      { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
-      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream' },
-      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file' },
-      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml' },
-
       // Images
       {
         test: /\.(?:ico|gif|png|jpg|jpeg|webp)$/,
@@ -49,8 +41,6 @@ export default merge(baseConfig, {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production')
     }),
-
-    new BabiliPlugin(),
 
     new ExtractTextPlugin({
       filename: 'style.css',

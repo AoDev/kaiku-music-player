@@ -1,5 +1,6 @@
-import {app, BrowserWindow, Menu, globalShortcut} from 'electron'
-import windowMenu from './windowMenu'
+const electron = require('electron')
+const {app, BrowserWindow, globalShortcut, Menu} = electron
+const windowMenu = require('./windowMenu')
 
 let menu
 let mainWindow = null

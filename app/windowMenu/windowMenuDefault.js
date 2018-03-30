@@ -1,4 +1,4 @@
-import _ from 'lodash'
+const _ = require('lodash')
 
 function createTemplate (mainWindow) {
   if (!_.isObject(mainWindow)) {
@@ -25,38 +25,38 @@ function createTemplate (mainWindow) {
     {
       label: '&View',
       submenu: (process.env.NODE_ENV === 'development')
-      ? [
-        {
-          label: '&Reload',
-          accelerator: 'Ctrl+R',
-          click () {
-            mainWindow.webContents.reload()
+        ? [
+          {
+            label: '&Reload',
+            accelerator: 'Ctrl+R',
+            click () {
+              mainWindow.webContents.reload()
+            }
+          },
+          {
+            label: 'Toggle &Full Screen',
+            accelerator: 'F11',
+            click () {
+              mainWindow.setFullScreen(!mainWindow.isFullScreen())
+            }
+          },
+          {
+            label: 'Toggle &Developer Tools',
+            accelerator: 'Alt+Ctrl+I',
+            click () {
+              mainWindow.toggleDevTools()
+            }
           }
-        },
-        {
-          label: 'Toggle &Full Screen',
-          accelerator: 'F11',
-          click () {
-            mainWindow.setFullScreen(!mainWindow.isFullScreen())
+        ]
+        : [
+          {
+            label: 'Toggle &Full Screen',
+            accelerator: 'F11',
+            click () {
+              mainWindow.setFullScreen(!mainWindow.isFullScreen())
+            }
           }
-        },
-        {
-          label: 'Toggle &Developer Tools',
-          accelerator: 'Alt+Ctrl+I',
-          click () {
-            mainWindow.toggleDevTools()
-          }
-        }
-      ]
-      : [
-        {
-          label: 'Toggle &Full Screen',
-          accelerator: 'F11',
-          click () {
-            mainWindow.setFullScreen(!mainWindow.isFullScreen())
-          }
-        }
-      ]
+        ]
     },
     {
       label: 'Help',
@@ -67,6 +67,6 @@ function createTemplate (mainWindow) {
   return template
 }
 
-export default {
+module.exports = {
   createTemplate
 }

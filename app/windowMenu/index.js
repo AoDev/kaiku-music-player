@@ -1,7 +1,7 @@
-import windowMenuOSX from './windowMenuOSX'
-import windowMenuDefault from './windowMenuDefault'
+const windowMenuOSX = require('./windowMenuOSX')
+const windowMenuDefault = require('./windowMenuDefault')
 
-export default {
+module.exports = {
   osx: windowMenuOSX,
   default: windowMenuDefault
 }

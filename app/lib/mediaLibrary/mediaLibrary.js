@@ -201,22 +201,22 @@ function scan (songsFolders, onScanComplete) {
 
 function refreshArtistData (artistID) {
   return kaikuDB.queryArray(sql.findArtistAlbums, [artistID])
-  .then((albums) => {
-    return Promise.all(albums.map((album) => refreshAlbumData(album._id)))
-  })
-  .then(() => kaikuDB.queryOne(sql.findArtistById, [artistID]))
-  .then((artist) => {
-    artist.lastUpdated = new Date().toISOString()
-    kaikuDB.query(sql.updateArtist, [artist.name, artist.lastUpdated, artistID])
-    return artist
-  })
+    .then((albums) => {
+      return Promise.all(albums.map((album) => refreshAlbumData(album._id)))
+    })
+    .then(() => kaikuDB.queryOne(sql.findArtistById, [artistID]))
+    .then((artist) => {
+      artist.lastUpdated = new Date().toISOString()
+      kaikuDB.query(sql.updateArtist, [artist.name, artist.lastUpdated, artistID])
+      return artist
+    })
 }
 
 function refreshArtistSongs (artistID) {
   return kaikuDB.queryArray(sql.findArtistSongs, [artistID])
-  .then((songs) => {
-    console.log(songs)
-  })
+    .then((songs) => {
+      console.log(songs)
+    })
   // .then((albums) => {
   //   return Promise.all(albums.map((album) => refreshAlbumData(album._id)))
   // })
@@ -224,23 +224,23 @@ function refreshArtistSongs (artistID) {
 
 function refreshSongData (songID) {
   return kaikuDB.queryOne(sql.findSong, [songID])
-  .then((song) => {
-    return Promise.all([
-      song,
-      readMetadata(song.filePath)
-    ])
-  })
-  .then((results) => {
-    const song = results[0]
-    const metadata = results[1]
-    song.title = metadata.title
-    song.trackNr = metadata.track.no || 0
-    kaikuDB.query(sql.updateSong, [song.title, song.artistID, song.albumID, song.trackNr, song.filePath, songID])
-    return song
-  })
-  .catch((err) => {
-    console.log(err)
-  })
+    .then((song) => {
+      return Promise.all([
+        song,
+        readMetadata(song.filePath)
+      ])
+    })
+    .then((results) => {
+      const song = results[0]
+      const metadata = results[1]
+      song.title = metadata.title
+      song.trackNr = metadata.track.no || 0
+      kaikuDB.query(sql.updateSong, [song.title, song.artistID, song.albumID, song.trackNr, song.filePath, songID])
+      return song
+    })
+    .catch((err) => {
+      console.log(err)
+    })
 }
 
 function readMetadata (filePath) {
@@ -272,27 +272,27 @@ function saveCover (albumId, format, imgBuffer) {
 
 function refreshAlbumData (albumID) {
   return kaikuDB.queryOne(sql.findAlbumFirstSong, [albumID])
-  .then((song) => {
-    return Promise.all([
-      kaikuDB.queryOne(sql.findAlbumById, [albumID]),
-      readMetadata(song.filePath)
-    ])
-  })
-  .then((results) => {
-    const album = results[0]
-    const metadata = results[1]
-    const coverFormat = metadata.picture.length ? metadata.picture[0].format : null
+    .then((song) => {
+      return Promise.all([
+        kaikuDB.queryOne(sql.findAlbumById, [albumID]),
+        readMetadata(song.filePath)
+      ])
+    })
+    .then((results) => {
+      const album = results[0]
+      const metadata = results[1]
+      const coverFormat = metadata.picture.length ? metadata.picture[0].format : null
 
-    if (coverFormat) {
-      album.cover = coverFormat
-      kaikuDB.query(sql.updateAlbum, [album.title, album.artistID, coverFormat, album.year, albumID])
-      let filename = saveCover(albumID, coverFormat, metadata.picture[0].data)
-      return filename
-    }
-    else {
-      return null
-    }
-  })
+      if (coverFormat) {
+        album.cover = coverFormat
+        kaikuDB.query(sql.updateAlbum, [album.title, album.artistID, coverFormat, album.year, albumID])
+        let filename = saveCover(albumID, coverFormat, metadata.picture[0].data)
+        return filename
+      }
+      else {
+        return null
+      }
+    })
 }
 
 function stopScan () {

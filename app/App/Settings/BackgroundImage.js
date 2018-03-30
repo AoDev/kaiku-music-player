@@ -16,7 +16,7 @@ export default function BackgroundImage (props) {
         </button>
       </div>
       {backgroundImage
-      ? <div className="input-group space-bottom-1">
+        ? <div className="input-group space-bottom-1">
           <input type="text" placeholder="Image file path" value={decodeURI(backgroundImage)} readOnly/>
           <span className="input-add-on">
             <button onClick={props.removeBackgroundImage}>
@@ -24,7 +24,7 @@ export default function BackgroundImage (props) {
             </button>
           </span>
         </div>
-      : null
+        : null
       }
     </div>
   )

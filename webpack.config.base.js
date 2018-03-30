@@ -2,13 +2,14 @@
  * Base webpack config used across other specific configs
  */
 
-import path from 'path'
-import {dependencies as externals} from './app/package'
+const path = require('path')
+const appPackage = require('./app/package')
+const externals = appPackage.dependencies
 
 const ROOT_FOLDER = __dirname
 const APP_FOLDER = path.join(ROOT_FOLDER, 'app')
 
-export default {
+module.exports = {
   module: {
     rules: [
       {
@@ -27,6 +28,15 @@ export default {
           'css-loader',
           'less-loader'
         ]
+      },
+      {
+        test: /.*images.+\.svg$/,
+        loader: 'url-loader',
+      },
+      {
+        test: /.*svg-sprite.+\.svg$/,
+        loader: 'svg-sprite-loader',
+        // options: {extract: true}
       }
     ]
   },
@@ -42,11 +52,13 @@ export default {
   // https://webpack.github.io/docs/configuration.html#resolve
   resolve: {
     alias: {
-      'UI': path.join(APP_FOLDER, 'framework')
+      'ui-framework': path.join(APP_FOLDER, 'ui-framework'),
+      'app-utils': path.join(APP_FOLDER, 'application', 'utils'),
+      'app-services': path.join(APP_FOLDER, 'application', 'services'),
+      'app-images': path.join(APP_FOLDER, 'images'),
+      'shared-components': path.join(APP_FOLDER, 'application', 'shared-components'),
     },
-    modules: [
-      path.join(__dirname, 'node_modules')
-    ],
+
     extensions: ['.js', '.jsx', '.json'],
     mainFields: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main']
   },

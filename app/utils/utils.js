@@ -14,7 +14,7 @@ function getClickPosition (event) {
   var parentPosition = getPosition(event.currentTarget)
   var xPosition = event.clientX - parentPosition.x
   var yPosition = event.clientY - parentPosition.y
-  return { x: xPosition, y: yPosition }
+  return {x: xPosition, y: yPosition}
 }
 
 /**
@@ -31,7 +31,7 @@ function getPosition (element) {
     yPosition += (element.offsetTop - element.scrollTop + element.clientTop)
     element = element.offsetParent
   }
-  return { x: xPosition, y: yPosition }
+  return {x: xPosition, y: yPosition}
 }
 
 /**

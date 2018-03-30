@@ -3,7 +3,7 @@
   "productName": "Kaiku",
   "version": "1.0.0",
   "description": "Kaiku Music Player",
-  "main": "./main.js",
+  "main": "./main.dist.js",
   "author": {
     "name": "Kevin Purnelle",
     "email": "kevin.purnelle@gmail.com",
