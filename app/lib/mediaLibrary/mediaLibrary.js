@@ -6,6 +6,7 @@
 
 import WebSQL from '../WebSQL'
 import {remote} from 'electron'
+import {sendMain} from '../../utils/ipcpRenderer'
 
 const fs = remote.require('fs')
 const path = remote.require('path')
@@ -25,7 +26,7 @@ const sql = {
   createArtistsTable: 'CREATE TABLE IF NOT EXISTS artists (_id INTEGER PRIMARY KEY, name VARCHAR, lastUpdated VARCHAR)',
   createSongsTable: 'CREATE TABLE IF NOT EXISTS songs (_id INTEGER PRIMARY KEY, title VARCHAR, artistID INTEGER, albumID INTEGER, trackNr INTEGER, filePath VARCHAR, duration REAL DEFAULT 0)',
   findAlbumById: 'SELECT _id, title, artistID, cover, year FROM albums WHERE _id = ?',
-  findAlbumFirstSong: 'SELECT _id, filePath FROM songs WHERE albumID = ? LIMIT 1',
+  findAlbumFirstSong: 'SELECT _id, title, artistID, albumID, trackNr, filePath, duration FROM songs WHERE albumID = ? LIMIT 1',
   findAlbums: 'SELECT _id, title, artistID, cover, year FROM albums ORDER BY _id',
   findArtistSongs: 'SELECT _id, title, artistID, albumID, trackNr, filePath FROM songs WHERE artistID = ?',
   findArtistAlbums: 'SELECT _id, title, artistID, cover, year FROM albums WHERE artistID = ?',
@@ -234,7 +235,6 @@ function refreshSongData (songID) {
     .then((results) => {
       const song = results[0]
       const metadata = results[1]
-      console.log(metadata)
       song.title = metadata.title
       song.trackNr = metadata.track.no || 0
       kaikuDB.query(sql.updateSong, [song.title, song.artistID, song.albumID, song.trackNr, song.filePath, song.duration, songID])
@@ -270,40 +270,24 @@ async function updateSongs (updatedSongs) {
 }
 
 /**
- * Save a cached version of an album cover to the disk
- * @param  {[type]} albumId   [description]
- * @param  {[type]} imgBuffer [description]
- * @return {[type]}           [description]
+ * Refresh / update an album data given its ID.
+ * - Get its cover.
+ * @param {Number} albumID
+ * @returns {Promise} Resolve with the cover extract result
  */
-function saveCover (albumId, format, imgBuffer) {
-  var filename = path.join(COVER_FOLDER, albumId + '.' + format)
-  fs.writeFileSync(filename, imgBuffer)
-  return filename
-}
+async function refreshAlbumData (albumID) {
+  const [album, firstSong] = await Promise.all([
+    kaikuDB.queryOne(sql.findAlbumById, [albumID]),
+    kaikuDB.queryOne(sql.findAlbumFirstSong, [albumID])
+  ])
 
-function refreshAlbumData (albumID) {
-  return kaikuDB.queryOne(sql.findAlbumFirstSong, [albumID])
-    .then((song) => {
-      return Promise.all([
-        kaikuDB.queryOne(sql.findAlbumById, [albumID]),
-        readMetadata(song.filePath)
-      ])
-    })
-    .then((results) => {
-      const album = results[0]
-      const metadata = results[1]
-      const coverFormat = metadata.picture.length ? metadata.picture[0].format : null
+  const extractResult = await sendMain('extractCoverFromSong', firstSong)
+  if (extractResult !== null) {
+    album.cover = extractResult.pictureFormat
+    kaikuDB.query(sql.updateAlbum, [album.title, album.artistID, album.cover, album.year, albumID])
+  }
 
-      if (coverFormat) {
-        album.cover = coverFormat
-        kaikuDB.query(sql.updateAlbum, [album.title, album.artistID, coverFormat, album.year, albumID])
-        let filename = saveCover(albumID, coverFormat, metadata.picture[0].data)
-        return filename
-      }
-      else {
-        return null
-      }
-    })
+  return extractResult
 }
 
 function stopScan () {

@@ -3,13 +3,7 @@ const {app, BrowserWindow, globalShortcut, Menu, ipcMain} = electron
 const windowMenu = require('./windowMenu')
 const main = require('./main')
 const {mediaLibrary} = main
-
-ipcMain.on('getSongsDuration', (event, arg) => {
-  mediaLibrary.refreshSongsDuration(arg)
-    .then((songs) => {
-      event.sender.send('gotSongsDuration', songs)
-    })
-})
+const ipcpMain = require('./utils/ipcpMain')
 
 let menu
 let mainWindow = null
@@ -143,3 +137,20 @@ function unregisterLocalEvents () {
   globalShortcut.unregister('VolumeMute')
   globalShortcut.unregister('CommandOrControl+F')
 }
+
+/** ---------------------- IPC messages Handling ----------------------------- **/
+
+ipcMain.on('getSongsDuration', async (event, songs) => {
+  const songsWithDuration = await mediaLibrary.refreshSongsDuration(songs)
+  event.sender.send('gotSongsDuration', songsWithDuration)
+})
+
+ipcMain.on('getSongMetadata', async (event, song) => {
+  const metadata = await mediaLibrary.readMetadata(song.filepath)
+  event.sender.send('gotSongMetadata', metadata)
+})
+
+ipcpMain.on('extractCoverFromSong', async (event, song) => {
+  const extractResult = await mediaLibrary.extractCoverFromSong(song)
+  event.respond(extractResult)
+})
