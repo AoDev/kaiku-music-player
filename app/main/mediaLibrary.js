@@ -8,6 +8,14 @@ const writeFile = util.promisify(fs.writeFile)
 
 const COVER_FOLDER = path.join(electron.app.getPath('userData'), 'covers')
 
+function init () {
+  // Always create cover folder if it does not exists
+  if (!fs.existsSync(COVER_FOLDER)) {
+    console.log('Creating covers cache dir...')
+    fs.mkdir(COVER_FOLDER)
+  }
+}
+
 function readMetadata (filePath) {
   return new Promise(function (resolve, reject) {
     const stream = fs.createReadStream(filePath)
@@ -52,6 +60,7 @@ async function extractCoverFromSong (song) {
 
 module.exports = {
   extractCoverFromSong,
+  init,
   readMetadata,
   refreshSongsDuration,
 }

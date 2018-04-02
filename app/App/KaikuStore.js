@@ -2,7 +2,7 @@ import * as mobx from 'mobx'
 import mediaLibrary from '../lib/mediaLibrary'
 import musicPlayer from '../lib/musicPlayer'
 import _ from 'lodash'
-import {ipcRenderer} from 'electron'
+import ipcpRenderer from '../utils/ipcpRenderer'
 
 const {observable, computed, action} = mobx
 
@@ -615,7 +615,11 @@ export default class KaikuStore {
     const shouldGetDuration = songs.some((song) => song.duration === 0)
 
     if (shouldGetDuration) {
-      ipcRenderer.send('getSongsDuration', songs)
+      ipcpRenderer.sendMain('getSongsDuration', songs)
+        .then((songsWithDuration) => {
+          this.playlist.set('songs', songsWithDuration)
+          mediaLibrary.updateSongs(songsWithDuration) // Save in DB (fire and forget)
+        })
     }
   }
 
@@ -709,10 +713,5 @@ export default class KaikuStore {
      * Setup some actions that should happen based on the player lib events.
      */
     musicPlayer.on('play', this.setSongPlaying)
-
-    ipcRenderer.on('gotSongsDuration', (event, updatedSongs) => {
-      this.playlist.set('songs', updatedSongs)
-      mediaLibrary.updateSongs(updatedSongs) // Save in DB (fire and forget)
-    })
   }
 }

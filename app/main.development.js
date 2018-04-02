@@ -44,6 +44,8 @@ app.on('window-all-closed', () => {
 app.on('ready', async () => {
   // await installExtensions()
 
+  mediaLibrary.init()
+
   mainWindow = new BrowserWindow({
     show: false,
     width: 1024,
@@ -140,14 +142,14 @@ function unregisterLocalEvents () {
 
 /** ---------------------- IPC messages Handling ----------------------------- **/
 
-ipcMain.on('getSongsDuration', async (event, songs) => {
+ipcpMain.on('getSongsDuration', async (event, songs) => {
   const songsWithDuration = await mediaLibrary.refreshSongsDuration(songs)
-  event.sender.send('gotSongsDuration', songsWithDuration)
+  event.respond(songsWithDuration)
 })
 
-ipcMain.on('getSongMetadata', async (event, song) => {
+ipcpMain.on('getSongMetadata', async (event, song) => {
   const metadata = await mediaLibrary.readMetadata(song.filepath)
-  event.sender.send('gotSongMetadata', metadata)
+  event.respond(metadata)
 })
 
 ipcpMain.on('extractCoverFromSong', async (event, song) => {
