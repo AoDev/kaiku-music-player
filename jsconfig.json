@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "module": "commonjs",
+    "paths": {
+      "ui-framework": ["./app/ui-framework"]
+    }
+  }
+}

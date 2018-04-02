@@ -1,5 +1,5 @@
 const electron = require('electron')
-const {app, BrowserWindow, globalShortcut, Menu, ipcMain} = electron
+const {app, BrowserWindow, globalShortcut, Menu} = electron
 const windowMenu = require('./windowMenu')
 const main = require('./main')
 const {mediaLibrary} = main
