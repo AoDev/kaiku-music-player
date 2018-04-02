@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/AoDev/kaiku-music-player/tree/master.svg?style=svg)](https://circleci.com/gh/AoDev/kaiku-music-player/tree/master)
+
 <img align="right" src="https://github.com/AoDev/kaiku-music-player/blob/master/app/images/kaiku-logo.png" width="128" alt="Kaiku logo"/>
 
 # Kaiku Music Player
