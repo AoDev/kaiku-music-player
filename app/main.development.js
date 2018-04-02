@@ -2,7 +2,7 @@ const electron = require('electron')
 const {app, BrowserWindow, globalShortcut, Menu} = electron
 const windowMenu = require('./windowMenu')
 const main = require('./main')
-const {mediaLibrary} = main
+const {mediaLibrary, configService} = main
 const ipcpMain = require('./utils/ipcpMain')
 
 let menu
@@ -155,4 +155,19 @@ ipcpMain.on('getSongMetadata', async (event, song) => {
 ipcpMain.on('extractCoverFromSong', async (event, song) => {
   const extractResult = await mediaLibrary.extractCoverFromSong(song)
   event.respond(extractResult)
+})
+
+ipcpMain.on('getAppSettings', async (event) => {
+  const settings = await configService.readLocalConfig()
+  event.respond(settings)
+})
+
+ipcpMain.on('saveAppSettings', async (event, updatedSettings) => {
+  try {
+    await configService.save(updatedSettings)
+    event.respond(true)
+  }
+  catch (err) {
+    event.respond(err.message)
+  }
 })

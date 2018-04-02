@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import {observer, inject} from 'mobx-react'
 import TimeControl from './TimeControl'
-import utils from '../../utils'
+import utils from 'app-utils'
 
 export class SongPlaying extends Component {
   render () {

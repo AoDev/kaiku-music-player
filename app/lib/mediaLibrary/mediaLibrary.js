@@ -9,7 +9,8 @@ import {remote} from 'electron'
 import ipcpRenderer from '../../utils/ipcpRenderer'
 
 const path = remote.require('path')
-const scanner = remote.require('./lib/libraryScanner')
+const main = remote.require('./main')
+const {libraryScanner} = main
 
 export const COVER_FOLDER = path.join(remote.app.getPath('userData'), 'covers')
 export const COVER_DEFAULT = './images/default-cover.svg'
@@ -179,10 +180,10 @@ function scan (songsFolders, onScanComplete) {
     console.log(`Scanning for songs in ${nextFolder}...`)
     if (folderIndex < songsFolders.length - 1) {
       folderIndex++
-      scanner.scanSongsDir(nextFolder, saveToLibrary, scanNextFolder)
+      libraryScanner.scanSongsDir(nextFolder, saveToLibrary, scanNextFolder)
     }
     else {
-      scanner.scanSongsDir(nextFolder, saveToLibrary, () => {
+      libraryScanner.scanSongsDir(nextFolder, saveToLibrary, () => {
         onScanComplete(null, library)
         library._artists.forEach((artist) => saveArtistToDb([artist.name]))
         library._albums.forEach((album) => saveAlbumToDb([album.title, album.artistID, album.cover, album.year]))
@@ -257,7 +258,7 @@ async function refreshAlbumData (albumID) {
 }
 
 function stopScan () {
-  scanner.stopScan()
+  libraryScanner.stopScan()
 }
 
 export default {
@@ -273,7 +274,7 @@ export default {
   refreshArtistSongs,
   refreshSongData,
   scan,
-  scanner,
+  libraryScanner,
   stopScan,
   updateSongs,
 }

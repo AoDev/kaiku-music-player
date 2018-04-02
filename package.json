@@ -50,7 +50,8 @@
       "main.dist.js.map",
       "package.json",
       "images/",
-      "lib/"
+      "lib/",
+      "main/"
     ],
     "mac": {
       "target": [

@@ -1,8 +1,8 @@
 import * as mobx from 'mobx'
-import mediaLibrary from '../lib/mediaLibrary'
-import musicPlayer from '../lib/musicPlayer'
+import mediaLibrary from '../../lib/mediaLibrary'
+import {musicPlayer} from 'app-services'
 import _ from 'lodash'
-import ipcpRenderer from '../utils/ipcpRenderer'
+import ipcpRenderer from '../../utils/ipcpRenderer'
 
 const {observable, computed, action} = mobx
 
@@ -188,23 +188,21 @@ class Settings {
     this.backgroundImage = ''
   }
 
-  @action.bound setConfig (config) {
-    this.songsFolders = config.songsFolders || []
-    this.backgroundImage = config.backgroundImage || ''
-  }
-
-  @action.bound restoreSettings (configPath) {
-    this.configService
-      .readLocalConfig()
-      .then(this.setConfig)
-      .catch((err) => {
-        errorHandler(err)
-        alert('Could not load local config.')
+  @action.bound async restoreSettings () {
+    try {
+      const settings = await ipcpRenderer.sendMain('getAppSettings')
+      mobx.runInAction(() => {
+        this.songsFolders = settings.songsFolders || []
+        this.backgroundImage = settings.backgroundImage || ''
       })
+    }
+    catch (err) {
+      errorHandler(err)
+      alert('Could not load local config.')
+    }
   }
 
-  constructor ({configService}) {
-    this.configService = configService
+  constructor () {
     this.restoreSettings()
 
     /**
@@ -217,8 +215,7 @@ class Settings {
         backgroundImage: this.backgroundImage
       }, null, 2)
     }, (config) => {
-      this.configService
-        .save(config)
+      ipcpRenderer.sendMain('saveAppSettings', config)
         .catch((err) => {
           errorHandler(err)
           alert('Issue while saving settings.')
@@ -570,7 +567,7 @@ class Scan {
    * Set the progress state from the media library scanner
    */
   @action.bound updateScanProgress () {
-    const progress = mediaLibrary.scanner.getProgress()
+    const progress = mediaLibrary.libraryScanner.getProgress()
     this.found = progress.found
     this.processed = progress.processed
   }
@@ -580,7 +577,7 @@ class Scan {
   }
 }
 
-export default class KaikuStore {
+export default class AppStore {
   appName = 'Kaiku'
 
   library = new Library()
@@ -704,11 +701,8 @@ export default class KaikuStore {
     }
   }
 
-  /**
-   * @param  {Object} options   {configService}
-   */
   constructor (options) {
-    this.settings = new Settings(options)
+    this.settings = new Settings()
     /**
      * Setup some actions that should happen based on the player lib events.
      */

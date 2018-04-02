@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import {observer} from 'mobx-react'
-import utils from '../../utils'
+import utils from 'app-utils'
 
 @observer
 export default class TimeControl extends Component {
