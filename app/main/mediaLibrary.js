@@ -1,8 +1,8 @@
 const fs = require('fs')
-const mm = require('musicmetadata')
 const path = require('path')
 const electron = require('electron')
 const util = require('util')
+const libraryScanner = require('./libraryScanner')
 
 const writeFile = util.promisify(fs.writeFile)
 
@@ -16,23 +16,10 @@ function init () {
   }
 }
 
-function readMetadata (filePath) {
-  return new Promise(function (resolve, reject) {
-    const stream = fs.createReadStream(filePath)
-    mm(stream, {duration: true}, function (err, metadata) {
-      if (err) {
-        reject(err)
-      }
-      else {
-        stream.close()
-        resolve(metadata)
-      }
-    })
-  })
-}
-
 async function refreshSongsDuration (songs) {
-  const songsMetadata = await Promise.all(songs.map((song) => readMetadata(song.filePath)))
+  const songsMetadata = await Promise.all(
+    songs.map((song) => libraryScanner.readMetadata(song.filePath, {duration: true}))
+  )
 
   return songs.map((song, index) => {
     song.duration = songsMetadata[index].duration
@@ -46,8 +33,8 @@ async function refreshSongsDuration (songs) {
  * @returns {Promise Object} extract result {pictureFormat, coverFilePath} | null
  */
 async function extractCoverFromSong (song) {
-  const songMetadata = await readMetadata(song.filePath)
-  const hasPicture = songMetadata.picture.length > 0
+  const songMetadata = await libraryScanner.readMetadata(song.filePath, {mergeTagHeaders: true})
+  const hasPicture = Array.isArray(songMetadata.picture) && songMetadata.picture.length > 0
 
   if (hasPicture) {
     const picture = songMetadata.picture[0]
@@ -61,6 +48,5 @@ async function extractCoverFromSong (song) {
 module.exports = {
   extractCoverFromSong,
   init,
-  readMetadata,
   refreshSongsDuration,
 }

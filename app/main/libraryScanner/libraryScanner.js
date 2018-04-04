@@ -2,8 +2,7 @@
  * @module libraryScanner
  */
 
-const fs = require('fs')
-const mm = require('musicmetadata')
+const mm = require('music-metadata')
 const filewalker = require('filewalker')
 const fastq = require('fastq')
 
@@ -12,7 +11,7 @@ var found = 0
 var q = null
 
 /* MM Format
-{ artist : ['Spor'],
+{ artist : 'Spor',
   album : 'Nightlife, Vol 5.',
   albumartist : [ 'Andy C', 'Spor' ],
   title : 'Stronger',
@@ -24,6 +23,20 @@ var q = null
   duration : 302 // in seconds
 }
 */
+
+function readMetadata (filePath, options = {}) {
+  return mm.parseFile(filePath, options)
+    .then((metadata) => {
+      if (metadata.format.duration) {
+        metadata.common.duration = metadata.format.duration
+      }
+      metadata.common.artist = metadata.common.artist || (metadata.common.artists && metadata.common.artists.join(' / '))
+      metadata.common.filePath = filePath
+      return metadata.common
+    })
+}
+
+const batchScanOptions = {skipCovers: true, mergeTagHeaders: true}
 
 /**
  * Traverse recursively a directory to scan song files and build DB
@@ -45,17 +58,11 @@ function scanSongsDir (songsDir, onSongData, onScanComplete) {
   function processSongFile (songFilePath, qNext) {
     processed++
     // process.stdout.write(processed + '/' + found + '\r')
-    const stream = fs.createReadStream(songFilePath)
-    mm(stream, function (err, metadata) {
-      if (!err) {
-        metadata.filePath = songFilePath
+    readMetadata(songFilePath, batchScanOptions)
+      .then((metadata) => {
         onSongData(metadata, qNext)
-      }
-      else {
-        qNext()
-      }
-      stream.close()
-    })
+      })
+      .catch(() => qNext())
   }
 
   q = fastq(processSongFile, 1)
@@ -97,7 +104,8 @@ function getProgress () {
 }
 
 module.exports = {
-  stopScan: stopScan,
-  scanSongsDir: scanSongsDir,
-  getProgress: getProgress
+  getProgress,
+  readMetadata,
+  scanSongsDir,
+  stopScan,
 }

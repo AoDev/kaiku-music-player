@@ -2,7 +2,7 @@ const electron = require('electron')
 const {app, BrowserWindow, globalShortcut, Menu} = electron
 const windowMenu = require('./windowMenu')
 const main = require('./main')
-const {mediaLibrary, configService} = main
+const {mediaLibrary, configService, libraryScanner} = main
 const ipcpMain = require('./utils/ipcpMain')
 
 let menu
@@ -148,7 +148,7 @@ ipcpMain.on('getSongsDuration', async (event, songs) => {
 })
 
 ipcpMain.on('getSongMetadata', async (event, song) => {
-  const metadata = await mediaLibrary.readMetadata(song.filepath)
+  const metadata = await libraryScanner.readMetadata(song.filepath, {duration: true})
   event.respond(metadata)
 })
 
