@@ -105,7 +105,8 @@ export class Albums extends Component {
   createMenu (event) {
     const albumID = Albums.getAlbumId(event.target)
     const actions = {
-      addAlbumToPlaylist: this.props.addAlbumToPlaylist
+      addAlbumToPlaylist: this.props.addAlbumToPlaylist,
+      refreshAlbumData: this.props.library.refreshAlbumData,
     }
     libraryContextMenus.showAlbumMenu(albumID, actions)
     this.selectAlbum(event)
@@ -149,7 +150,8 @@ Albums.propTypes = {
     setAlbumSelected: PropTypes.func.isRequired,
     artistSelected: PropTypes.shape({}),
     filter: PropTypes.instanceOf(RegExp),
-    albumInSight: PropTypes.number
+    albumInSight: PropTypes.number,
+    refreshAlbumData: PropTypes.func.isRequired,
   }),
 
   albumPlaying: PropTypes.shape({

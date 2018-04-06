@@ -147,8 +147,8 @@ ipcpMain.on('getSongsDuration', async (event, songs) => {
   event.respond(songsWithDuration)
 })
 
-ipcpMain.on('getSongMetadata', async (event, song) => {
-  const metadata = await libraryScanner.readMetadata(song.filepath, {duration: true})
+ipcpMain.on('getSongMetadata', async (event, song, options = {}) => {
+  const metadata = await libraryScanner.readMetadata(song.filePath, {...options, duration: true})
   event.respond(metadata)
 })
 

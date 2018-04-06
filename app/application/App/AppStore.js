@@ -391,6 +391,16 @@ class Library {
   }
 
   /**
+   * Pull all albums from the medialibrary DB and reset them
+   * TODO: this is not performant at all and should be refactored
+   */
+  @action.bound async reloadAlbums () {
+    const albums = await mediaLibrary.findAlbums()
+    this.setAlbums(albums)
+    return albums
+  }
+
+  /**
    * Update the artist data.
    * Will refresh its album and update the lastUpdated data.
    * Then it will reload the library.
@@ -405,9 +415,18 @@ class Library {
         artist.lastUpdated = _artist.lastUpdated
         return artist
       }))
-      .then(mediaLibrary.findAlbums)
-      .then(this.setAlbums)
+      .then(this.reloadAlbums)
       .catch(errorHandler)
+  }
+
+  @action.bound async refreshAlbumData (albumID) {
+    try {
+      await mediaLibrary.refreshAlbumData(albumID)
+      this.reloadAlbums()
+    }
+    catch (err) {
+      window.alert(`Sorry, the update failed. [${err.message}]`)
+    }
   }
 
   @action.bound refreshSongData (songID) {

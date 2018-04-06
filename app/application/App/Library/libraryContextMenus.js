@@ -35,7 +35,13 @@ function showAlbumMenu (albumID, actions) {
       click () {
         actions.addAlbumToPlaylist(albumID)
       }
-    }
+    },
+    {
+      label: 'Refresh album data',
+      click () {
+        actions.refreshAlbumData(albumID)
+      }
+    },
   ]).popup(currentWindow, {async: true})
 }
 

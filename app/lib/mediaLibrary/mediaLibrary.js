@@ -238,9 +238,11 @@ async function updateSongs (updatedSongs) {
 
 /**
  * Refresh / update an album data given its ID.
+ * Find its first song and use the metadata to update the album.
  * - Get its cover.
+ * - Update title / year
  * @param {Number} albumID
- * @returns {Promise} Resolve with the cover extract result
+ * @returns {Promise} Resolve with the updated album data
  */
 async function refreshAlbumData (albumID) {
   const [album, firstSong] = await Promise.all([
@@ -248,13 +250,22 @@ async function refreshAlbumData (albumID) {
     kaikuDB.queryOne(sql.findAlbumFirstSong, [albumID])
   ])
 
-  const extractResult = await ipcpRenderer.sendMain('extractCoverFromSong', firstSong)
+  const [songMetadata, extractResult] = await Promise.all([
+    ipcpRenderer.sendMain('getSongMetadata', firstSong, {skipCovers: true}),
+    ipcpRenderer.sendMain('extractCoverFromSong', firstSong),
+  ])
+
   if (extractResult !== null) {
     album.cover = extractResult.pictureFormat
-    kaikuDB.query(sql.updateAlbum, [album.title, album.artistID, album.cover, album.year, albumID])
   }
+  if (!album.year && songMetadata.year) {
+    album.year = songMetadata.year
+  }
+  album.title = songMetadata.album
 
-  return extractResult
+  kaikuDB.query(sql.updateAlbum, [album.title, album.artistID, album.cover, album.year, albumID])
+
+  return album
 }
 
 function stopScan () {
