@@ -22,7 +22,8 @@
     "postinstall": "electron-builder install-app-deps",
     "start-hot": "cross-env HOT=1 NODE_ENV=development electron -r @babel/register -r @babel/polyfill ./app/main.development",
     "start": "cross-env NODE_ENV=production electron ./app/",
-    "trash:release": "trash ./release ./app/main.js ./app/main.js.map ./app/bundle.js ./app/bundle.js.map ./app/style.css ./app/style.css.map"
+    "trash:release": "trash ./release ./app/main.js ./app/main.js.map ./app/bundle.js ./app/bundle.js.map ./app/style.css ./app/style.css.map",
+    "test": "jest"
   },
   "build": {
     "productName": "Kaiku",
@@ -149,7 +150,7 @@
     "howler": "2.0.9",
     "html-webpack-plugin": "2.30.1",
     "jest": "22.4.3",
-    "jsdom": "11.6.2",
+    "jsdom": "11.7.0",
     "json-loader": "0.5.7",
     "less": "2.7.3",
     "less-loader": "4.1.0",
@@ -158,8 +159,8 @@
     "mobx-react": "5.0.0",
     "mobx-react-devtools": "5.0.1",
     "prop-types": "15.6.1",
-    "react": "16.3.0",
-    "react-dom": "16.3.0",
+    "react": "16.3.1",
+    "react-dom": "16.3.1",
     "react-hot-loader": "3.1.3",
     "regenerator-runtime": "0.11.1",
     "source-map-support": "0.5.3",
