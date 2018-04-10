@@ -4,6 +4,8 @@
 
 # Kaiku Music Player
 
+[![Join the chat at https://gitter.im/AoDev/kaiku-music-player](https://badges.gitter.im/AoDev/kaiku-music-player.svg)](https://gitter.im/AoDev/kaiku-music-player?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 "Kaiku" means "echo" in Finnish and it is a music player inspired by Winamp.
 
 Built on top of Electron (Chromium + Node.js), React and Mobx.
