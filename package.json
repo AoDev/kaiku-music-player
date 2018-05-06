@@ -85,6 +85,11 @@
       "output": "release"
     }
   },
+  "standard-version": {
+    "skip": {
+      "tag": true
+    }
+  },
   "bin": {
     "electron": "./node_modules/.bin/electron"
   },
