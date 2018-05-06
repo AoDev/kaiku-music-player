@@ -1,7 +1,7 @@
 {
   "name": "kaiku",
   "productName": "Kaiku",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Kaiku Music Player for Winamp nostalgic and local music files.",
   "main": "main.dist.js",
   "scripts": {
