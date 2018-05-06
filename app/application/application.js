@@ -63,6 +63,11 @@ ipcRenderer.on('search', function () {
   document.querySelector('#search').focus()
 })
 
+// Listen for messages
+ipcRenderer.on('message', function (event, text) {
+  console.log(text)
+})
+
 /**
  * Automatically apply new background image when its path is changed
  */

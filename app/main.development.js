@@ -4,6 +4,7 @@ const windowMenu = require('./windowMenu')
 const main = require('./main')
 const {mediaLibrary, configService, libraryScanner} = main
 const ipcpMain = require('./utils/ipcpMain')
+const autoUpdater = require('electron-updater').autoUpdater
 
 let menu
 let mainWindow = null
@@ -62,6 +63,35 @@ app.on('ready', async () => {
   mainWindow.on('closed', () => {
     globalShortcut.unregisterAll()
     mainWindow = null
+  })
+
+  autoUpdater.checkForUpdatesAndNotify()
+
+  //
+  function sendStatusToWindow (text) {
+    mainWindow.webContents.send('message', text)
+  }
+
+  autoUpdater.on('checking-for-update', () => {
+    sendStatusToWindow('Checking for update...')
+  })
+  autoUpdater.on('update-available', (info) => {
+    sendStatusToWindow('Update available.')
+  })
+  autoUpdater.on('update-not-available', (info) => {
+    sendStatusToWindow('Update not available.')
+  })
+  autoUpdater.on('error', (err) => {
+    sendStatusToWindow('Error in auto-updater. ' + err)
+  })
+  autoUpdater.on('download-progress', (progressObj) => {
+    let message = 'Download speed: ' + progressObj.bytesPerSecond
+    message = message + ' - Downloaded ' + progressObj.percent + '%'
+    message = message + ' (' + progressObj.transferred + '/' + progressObj.total + ')'
+    sendStatusToWindow(message)
+  })
+  autoUpdater.on('update-downloaded', (info) => {
+    sendStatusToWindow('Update downloaded')
   })
 
   if (process.env.NODE_ENV === 'development') {

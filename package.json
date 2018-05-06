@@ -1,7 +1,7 @@
 {
   "name": "kaiku",
   "productName": "Kaiku",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Kaiku Music Player for Winamp nostalgic and local music files.",
   "main": "main.dist.js",
   "scripts": {
@@ -23,7 +23,9 @@
     "start-hot": "cross-env HOT=1 NODE_ENV=development electron -r @babel/register -r @babel/polyfill ./app/main.development",
     "start": "cross-env NODE_ENV=production electron ./app/",
     "trash:release": "trash ./release ./app/main.js ./app/main.js.map ./app/bundle.js ./app/bundle.js.map ./app/style.css ./app/style.css.map",
-    "test": "jest"
+    "test": "jest",
+    "publish": "build -p always",
+    "release": "standard-version"
   },
   "build": {
     "productName": "Kaiku",
@@ -55,12 +57,19 @@
       "main/"
     ],
     "mac": {
-      "target": [
-        "dir"
+      "publish": [
+        "github"
       ],
-      "category": "public.app-category.music"
+      "category": "public.app-category.music",
+      "target": [
+        "zip",
+        "dmg"
+      ]
     },
     "win": {
+      "publish": [
+        "github"
+      ],
       "target": [
         "nsis"
       ]
@@ -131,6 +140,7 @@
     "electron-builder": "20.8.1",
     "electron-debug": "1.5.0",
     "electron-devtools-installer": "2.2.3",
+    "electron-updater": "2.21.10",
     "enzyme": "3.3.0",
     "enzyme-adapter-react-16": "1.1.1",
     "es6-promisify": "6.0.0",
