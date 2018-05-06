@@ -1,7 +1,7 @@
 {
   "name": "kaiku",
   "productName": "Kaiku",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Kaiku Music Player for Winamp nostalgic and local music files.",
   "main": "main.dist.js",
   "scripts": {
@@ -24,7 +24,7 @@
     "start": "cross-env NODE_ENV=production electron ./app/",
     "trash:release": "trash ./release ./app/main.js ./app/main.js.map ./app/bundle.js ./app/bundle.js.map ./app/style.css ./app/style.css.map",
     "test": "jest",
-    "publish": "build -p always",
+    "deploy": "build -p always",
     "release": "standard-version"
   },
   "build": {
