@@ -11,10 +11,11 @@ const baseConfig = require('./webpack.config.base')
 const port = process.env.PORT || 3001
 
 module.exports = merge(baseConfig, {
+  mode: 'development',
   devtool: 'source-map',
 
   entry: [
-    'react-hot-loader/patch',
+    // 'react-hot-loader/patch', CAUSE PROBLEMS IN REACT LIFECYCLES
     `webpack-hot-middleware/client?path=http://localhost:${port}/__webpack_hmr`,
     '@babel/polyfill',
     './app/index'

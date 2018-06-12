@@ -7,6 +7,7 @@ const merge = require('webpack-merge')
 const baseConfig = require('./webpack.config.base')
 
 module.exports = merge(baseConfig, {
+  mode: 'production',
   devtool: 'source-map',
 
   entry: ['@babel/polyfill', './app/main.development'],

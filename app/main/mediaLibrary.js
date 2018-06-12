@@ -38,9 +38,10 @@ async function extractCoverFromSong (song) {
 
   if (hasPicture) {
     const picture = songMetadata.picture[0]
-    const coverFilePath = path.join(COVER_FOLDER, song.albumID + '.' + picture.format)
+    const ext = picture.format === 'image/jpeg' ? 'jpg' : picture.format
+    const coverFilePath = path.join(COVER_FOLDER, song.albumID + '.' + ext)
     await writeFile(coverFilePath, picture.data)
-    return {pictureFormat: picture.format, coverFilePath}
+    return {pictureFormat: ext, coverFilePath}
   }
   return null
 }

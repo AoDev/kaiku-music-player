@@ -87,3 +87,7 @@ mobx.reaction(() => {
 }, {
   name: 'updateBackground'
 })
+
+export default {
+  store
+}

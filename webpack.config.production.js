@@ -10,6 +10,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = merge(baseConfig, {
+  mode: 'production',
   devtool: 'cheap-module-source-map',
 
   entry: [
@@ -35,7 +36,7 @@ module.exports = merge(baseConfig, {
   plugins: [
     // https://webpack.github.io/docs/list-of-plugins.html#occurrenceorderplugin
     // https://github.com/webpack/webpack/issues/864
-    new webpack.optimize.OccurrenceOrderPlugin(),
+    // new webpack.optimize.OccurrenceOrderPlugin(),
 
     // NODE_ENV should be production so that modules do not perform certain development checks
     new webpack.DefinePlugin({

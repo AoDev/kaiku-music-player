@@ -19,7 +19,8 @@ module.exports = {
       },
       {
         test: /\.json$/,
-        loader: 'json-loader'
+        loader: 'json-loader',
+        type: 'javascript/auto'
       },
       {
         test: /\.less$/,
