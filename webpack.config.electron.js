@@ -2,30 +2,35 @@
  * Build config for electron 'Main Process' file
  */
 
+const path = require('path')
 const webpack = require('webpack')
-const merge = require('webpack-merge')
-const baseConfig = require('./webpack.config.base')
+const appPackage = require('./app/package')
+const externals = Object.keys(appPackage.dependencies || {})
 
-module.exports = merge(baseConfig, {
+module.exports = {
   mode: 'production',
   devtool: 'source-map',
+  entry: ['./app/main/main.js'],
 
-  entry: ['@babel/polyfill', './app/main.development'],
-
-  // 'main.js' in root
-  output: {
-    path: __dirname,
-    filename: './app/main.dist.js'
+  module: {
+    rules: [
+      {
+        test: /\.jsx?$/,
+        use: ['babel-loader'],
+        exclude: /node_modules/
+      },
+    ]
   },
 
+  output: {
+    path: path.join(__dirname, 'app', 'main'),
+    filename: 'main.dist.js',
+    libraryTarget: 'commonjs2'
+  },
+
+  externals,
+
   plugins: [
-    // new BabiliPlugin(),
-    // Add source map support for stack traces in node
-    // https://github.com/evanw/node-source-map-support
-    // new webpack.BannerPlugin(
-    //   'require("source-map-support").install()',
-    //   { raw: true, entryOnly: false }
-    // ),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production')
@@ -48,4 +53,4 @@ module.exports = merge(baseConfig, {
     __dirname: false,
     __filename: false
   }
-})
+}
