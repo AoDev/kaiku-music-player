@@ -93,6 +93,11 @@ _.merge(MusicPlayer.prototype, {
     this.emit('pause')
   },
 
+  stop () {
+    this.sound && this.sound.stop()
+    this.emit('stop')
+  },
+
   toggle () {
     this.sound && this.sound.togglePause()
   },

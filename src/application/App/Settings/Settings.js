@@ -118,7 +118,7 @@ export class Settings extends Component {
     const userChoice = dialog.showMessageBox(clearLibraryDialog)
     const shouldStop = userChoice === 1
     if (shouldStop) {
-      this.props.library.clearLibrary()
+      this.props.appStore.clearLibrary()
     }
   }
 
@@ -198,6 +198,7 @@ export class Settings extends Component {
 }
 
 export default inject(({appStore}) => ({
+  appStore,
   scanForSongs: appStore.scanForSongs,
   settings: appStore.settings,
   scan: appStore.scan,
@@ -205,6 +206,9 @@ export default inject(({appStore}) => ({
 }))(observer(Settings))
 
 Settings.propTypes = {
+  appStore: PropTypes.shape({
+    clearLibrary: PropTypes.func.isRequired,
+  }).isRequired,
   scanForSongs: PropTypes.func.isRequired,
   settings: PropTypes.shape({
     addSongsFolder: PropTypes.func.isRequired,

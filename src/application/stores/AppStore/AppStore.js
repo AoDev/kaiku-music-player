@@ -17,6 +17,10 @@ export default class AppStore {
   @observable.ref albumPlaying = null
   @observable.ref artistPlaying = null
 
+  @action.bound assign (props) {
+    Object.assign(this, props)
+  }
+
   @action.bound addArtistToPlaylist (artistID) {
     const songs = this.library.getArtistSongs(artistID)
     this.playlist.addSongs(songs)
@@ -126,6 +130,16 @@ export default class AppStore {
       this.library.artistInSight = this.artistPlaying._id
       this.library.albumInSight = this.albumPlaying._id
     }
+  }
+
+  /**
+   * clear db, stop playing, reset song playlist, reset playlist.
+   */
+  @action.bound clearLibrary () {
+    this.library.clearLibrary()
+    this.playlist.emptyPlaylist()
+    musicPlayer.stop()
+    this.assign({songPlaying: null, albumPlaying: null, artistPlaying: null})
   }
 
   constructor (options) {
