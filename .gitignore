@@ -31,15 +31,11 @@ app/node_modules
 .DS_Store
 
 # App packaged
-release
-app/main.dist.js
-app/main.dist.js.map
-app/bundle.js
-app/bundle.js.map
-app/style.css
-app/style.css.map
+electronReleases
+main.dist.js
+main.dist.js.map
 dist
-main.js
-main.js.map
-
+.env
 .idea
+webpack.stats.json
+tmp

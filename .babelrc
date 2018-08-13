@@ -13,8 +13,8 @@
       "@babel/preset-env",
       {
         "targets": {
-          "chrome": 58,
-          "electron": "1.8.3"
+          "chrome": 61,
+          "electron": "2.0.2"
         },
         "modules": false,
         "useBuiltIns": "usage"

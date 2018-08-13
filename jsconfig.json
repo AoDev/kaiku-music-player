@@ -4,7 +4,21 @@
     "baseUrl": ".",
     "module": "commonjs",
     "paths": {
-      "ui-framework": ["./app/ui-framework"]
+      "ui-framework": [
+        "./src/ui-framework"
+      ],
+      "app-utils": [
+        "./src/application/utils"
+      ],
+      "app-services": [
+        "./src/application/services"
+      ],
+      "app-images": [
+        "./src/images"
+      ],
+      "shared-components": [
+        "./src/application/shared-components"
+      ]
     }
   }
 }

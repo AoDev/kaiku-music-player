@@ -3,11 +3,9 @@
  */
 
 const path = require('path')
-const appPackage = require('./app/package')
-const externals = appPackage.dependencies
 
 const ROOT_FOLDER = __dirname
-const APP_FOLDER = path.join(ROOT_FOLDER, 'app')
+const SRC_FOLDER = path.join(ROOT_FOLDER, 'src')
 
 module.exports = {
   module: {
@@ -19,7 +17,8 @@ module.exports = {
       },
       {
         test: /\.json$/,
-        loader: 'json-loader'
+        loader: 'json-loader',
+        type: 'javascript/auto'
       },
       {
         test: /\.less$/,
@@ -43,20 +42,32 @@ module.exports = {
 
   output: {
     path: path.join(__dirname, 'app'),
-    filename: 'bundle.js',
+    filename: '[name].js',
 
     // https://github.com/webpack/webpack/issues/1114
     libraryTarget: 'commonjs2'
   },
 
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all'
+        }
+      }
+    }
+  },
+
   // https://webpack.github.io/docs/configuration.html#resolve
   resolve: {
     alias: {
-      'ui-framework': path.join(APP_FOLDER, 'ui-framework'),
-      'app-utils': path.join(APP_FOLDER, 'application', 'utils'),
-      'app-services': path.join(APP_FOLDER, 'application', 'services'),
-      'app-images': path.join(APP_FOLDER, 'images'),
-      'shared-components': path.join(APP_FOLDER, 'application', 'shared-components'),
+      'ui-framework': path.join(SRC_FOLDER, 'ui-framework'),
+      'app-utils': path.join(SRC_FOLDER, 'application', 'utils'),
+      'app-services': path.join(SRC_FOLDER, 'application', 'services'),
+      'app-images': path.join(SRC_FOLDER, 'images'),
+      'shared-components': path.join(SRC_FOLDER, 'application', 'shared-components'),
     },
 
     extensions: ['.js', '.jsx', '.json'],
@@ -64,6 +75,4 @@ module.exports = {
   },
 
   plugins: [],
-
-  externals: Object.keys(externals || {})
 }

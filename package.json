@@ -5,90 +5,28 @@
   "description": "Kaiku Music Player for Winamp nostalgic and local music files.",
   "main": "main.dist.js",
   "scripts": {
-    "build-main": "cross-env NODE_ENV=production node -r @babel/register ./node_modules/webpack/bin/webpack --config webpack.config.electron.js --progress --profile --colors",
-    "build-renderer": "cross-env NODE_ENV=production node -r @babel/register ./node_modules/webpack/bin/webpack --config webpack.config.production.js --progress --profile --colors",
-    "build": "npm run build-main && npm run build-renderer",
+    "analyze": "webpack-bundle-analyzer ./webpack.stats.json ./app/dist -m server",
+    "compile:main": "cross-env NODE_ENV=production node -r @babel/register ./node_modules/webpack/bin/webpack --config webpack.config.electron.js --progress --profile --colors",
+    "compile:renderer": "cross-env NODE_ENV=production node -r @babel/register ./node_modules/webpack/bin/webpack --config webpack.config.production.js --progress --profile --colors",
+    "compile": "npm run compile:main && npm run compile:renderer",
+    "deploy-release": "npm run compile && build -p always --config electron-builder.config.js",
     "dev": "npm run hot-server -- --start-hot",
     "hot-server": "cross-env NODE_ENV=development node --max_old_space_size=2096 -r @babel/register server.js",
-    "lint-fix": "npm run lint -- --fix",
+    "icon-gen": "icon-gen -i ./app/images/app-icon-source.svg -o ./buildResources -m ico,icns -n ico=icon,icns=icon -r",
     "lint:css": "stylelint \"app/**/*.less\"",
-    "lint:js": "eslint app --quiet",
+    "lint:js": "eslint app src --quiet",
     "lint": "npm run lint:js && npm run lint:css",
-    "package-all": "npm run build && build -mwl",
-    "package-linux": "npm run build && build --linux",
-    "package-mac": "npm run build && build --mac --publish never",
-    "package-win": "npm run build && build --win --x64",
-    "package": "npm run build && build --publish never",
+    "package:linux": "npm run compile && build --linux --publish never --config electron-builder.config.js",
+    "package:mac": "npm run compile && build --mac --publish never --config electron-builder.config.js",
+    "package:win": "npm run compile && build --win --x64 --publish never --config electron-builder.config.js",
     "postinstall": "electron-builder install-app-deps",
-    "start-hot": "cross-env HOT=1 NODE_ENV=development electron -r @babel/register -r @babel/polyfill ./app/main.development",
+    "profile:renderer": "npm run compile:renderer -- --profile --json > webpack.stats.json",
+    "tag-release": "npm --prefix ./app run bump-version && git add ./app/package.json && standard-version -a",
+    "start-hot": "cross-env HOT=1 NODE_ENV=development electron -r @babel/register -r @babel/polyfill ./app/main/main.js",
     "start": "cross-env NODE_ENV=production electron ./app/",
-    "trash:release": "trash ./release ./app/main.js ./app/main.js.map ./app/bundle.js ./app/bundle.js.map ./app/style.css ./app/style.css.map",
     "test": "jest",
-    "deploy": "build -p always",
-    "release": "standard-version"
-  },
-  "build": {
-    "productName": "Kaiku",
-    "appId": "com.kevinpurnelle.kaiku",
-    "dmg": {
-      "contents": [
-        {
-          "x": 410,
-          "y": 150,
-          "type": "link",
-          "path": "/Applications"
-        },
-        {
-          "x": 130,
-          "y": 150,
-          "type": "file"
-        }
-      ]
-    },
-    "files": [
-      "dist/",
-      "node_modules/",
-      "app.html",
-      "main.dist.js",
-      "main.dist.js.map",
-      "package.json",
-      "images/",
-      "lib/",
-      "main/"
-    ],
-    "mac": {
-      "publish": [
-        "github"
-      ],
-      "category": "public.app-category.music",
-      "target": [
-        "zip",
-        "dmg"
-      ]
-    },
-    "win": {
-      "publish": [
-        "github"
-      ],
-      "target": [
-        "nsis"
-      ]
-    },
-    "linux": {
-      "target": [
-        "deb",
-        "AppImage"
-      ]
-    },
-    "directories": {
-      "buildResources": "resources",
-      "output": "release"
-    }
-  },
-  "standard-version": {
-    "skip": {
-      "tag": true
-    }
+    "test-unit": "jest",
+    "trash:release": "trash ./electronReleases ./app/main/main.dist.js ./app/main/main.dist.js.map ./app/dist"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -128,74 +66,71 @@
     "@babel/runtime": "7.0.0-beta.36",
     "asar": "0.14.3",
     "babel-core": "7.0.0-bridge.0",
-    "babel-eslint": "8.2.2",
-    "babel-jest": "22.4.3",
+    "babel-eslint": "8.2.3",
+    "babel-jest": "23.0.1",
     "babel-loader": "8.0.0-beta.0",
     "babel-minify": "0.3.0",
-    "babel-plugin-lodash": "3.3.2",
-    "babel-plugin-transform-decorators-legacy": "1.3.4",
-    "babel-plugin-transform-react-remove-prop-types": "0.4.12",
+    "babel-plugin-lodash": "3.3.4",
+    "babel-plugin-transform-decorators-legacy": "1.3.5",
+    "babel-plugin-transform-react-remove-prop-types": "0.4.13",
     "chai": "4.1.2",
-    "classnames": "2.2.5",
+    "classnames": "2.2.6",
     "concurrently": "3.5.1",
-    "cross-env": "5.1.4",
+    "cross-env": "5.1.6",
     "css-loader": "0.28.11",
     "devtron": "1.4.0",
-    "electron": "1.8.4",
-    "electron-builder": "20.8.1",
-    "electron-debug": "1.5.0",
-    "electron-devtools-installer": "2.2.3",
-    "electron-updater": "2.21.10",
+    "electron": "2.0.7",
+    "electron-builder": "20.27.1",
+    "electron-debug": "2.0.0",
+    "electron-devtools-installer": "2.2.4",
+    "electron-ipcp": "1.0.0",
+    "electron-updater": "3.1.1",
     "enzyme": "3.3.0",
     "enzyme-adapter-react-16": "1.1.1",
     "es6-promisify": "6.0.0",
     "eslint": "4.19.1",
-    "eslint-config-standard": "10.2.1",
-    "eslint-import-resolver-webpack": "0.8.4",
-    "eslint-loader": "1.9.0",
-    "eslint-plugin-import": "2.10.0",
+    "eslint-config-standard": "11.0.0",
+    "eslint-import-resolver-webpack": "0.10.0",
+    "eslint-loader": "2.0.0",
+    "eslint-plugin-import": "2.12.0",
     "eslint-plugin-lodash": "2.7.0",
-    "eslint-plugin-node": "5.2.1",
-    "eslint-plugin-promise": "3.7.0",
-    "eslint-plugin-react": "7.7.0",
-    "eslint-plugin-standard": "3.0.1",
+    "eslint-plugin-node": "6.0.1",
+    "eslint-plugin-promise": "3.8.0",
+    "eslint-plugin-react": "7.9.1",
+    "eslint-plugin-standard": "3.1.0",
     "express": "4.16.3",
-    "extract-text-webpack-plugin": "3.0.2",
+    "extract-text-webpack-plugin": "4.0.0-beta.0",
     "file-loader": "1.1.11",
-    "howler": "2.0.9",
-    "html-webpack-plugin": "2.30.1",
-    "jest": "22.4.3",
-    "jsdom": "11.7.0",
+    "howler": "2.0.12",
+    "html-webpack-plugin": "3.2.0",
+    "jest": "23.1.0",
+    "jsdom": "11.11.0",
     "json-loader": "0.5.7",
-    "less": "2.7.3",
+    "less": "3.0.4",
     "less-loader": "4.1.0",
+    "lodash": "4.17.10",
     "minimist": "1.2.0",
     "mobx": "4.1.1",
-    "mobx-react": "5.0.0",
+    "mobx-react": "5.2.3",
     "mobx-react-devtools": "5.0.1",
+    "mobx-spy-logger": "0.0.2",
     "prop-types": "15.6.1",
-    "react": "16.3.1",
-    "react-dom": "16.3.1",
+    "react": "16.4.0",
+    "react-dom": "16.4.0",
     "react-hot-loader": "3.1.3",
     "regenerator-runtime": "0.11.1",
-    "source-map-support": "0.5.3",
     "spectron": "3.8.0",
-    "standard-version": "4.3.0",
-    "style-loader": "0.20.3",
-    "stylelint": "8.4.0",
-    "svg-sprite-loader": "3.7.3",
+    "standard-version": "4.4.0",
+    "style-loader": "0.21.0",
+    "stylelint": "9.2.1",
+    "svg-sprite-loader": "3.9.0",
     "trash-cli": "1.4.0",
-    "url-loader": "0.6.2",
-    "webpack": "3.11.0",
-    "webpack-dev-middleware": "2.0.5",
-    "webpack-hot-middleware": "2.21.2",
-    "webpack-merge": "4.1.2"
-  },
-  "dependencies": {
-    "electron-debug": "1.5.0",
-    "filewalker": "0.1.3",
-    "lodash": "4.17.5",
-    "music-metadata": "0.10.1"
+    "url-loader": "1.0.1",
+    "webpack": "4.16.5",
+    "webpack-cli": "3.1.0",
+    "webpack-dev-middleware": "3.1.3",
+    "webpack-hot-middleware": "2.22.2",
+    "webpack-merge": "4.1.4"
   },
   "devEngines": {
     "node": ">=6.x",
