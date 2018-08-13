@@ -1,4 +1,6 @@
 import {defaultCover} from 'app-images'
+import _ from 'lodash'
+
 const {remote} = require('electron')
 const app = remote.app
 const path = remote.require('path')
@@ -44,7 +46,7 @@ function getPosition (element) {
 function percentage (part, total, precision) {
   var percentage = (part / total) * 100
   if (precision) {
-    percentage = percentage.toFixed(precision)
+    percentage = _.round(percentage, precision)
   }
   return percentage
 }

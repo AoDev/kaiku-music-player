@@ -3,6 +3,15 @@ import React, {Component} from 'react'
 import {observer, inject} from 'mobx-react'
 import TimeControl from './TimeControl'
 import utils from 'app-utils'
+import {ExternalLink} from 'shared-components'
+
+const songPlayingMock = (
+  <div>
+    <div className="title">Kaiku music player</div>
+    <small>by </small> <span className="artist">AoDev</span>
+    <small> on </small> <span className="album"><ExternalLink href="https://github.com/AoDev/kaiku-music-player">Github</ExternalLink></span>
+  </div>
+)
 
 export class SongPlaying extends Component {
   render () {
@@ -17,12 +26,15 @@ export class SongPlaying extends Component {
         <div>
           <TimeControl player={appStore.player}/>
 
-          {songPlaying &&
-            <div>
-              <div className="title">{songPlaying.title}</div>
-              <small>by </small> <span className="artist">{artistPlaying.name}</span>
-              <small> on </small> <span className="album">{albumPlaying.title}</span>
-            </div>
+          {!songPlaying
+            ? songPlayingMock
+            : (
+              <div>
+                <div className="title">{songPlaying.title}</div>
+                <small>by </small> <span className="artist">{artistPlaying.name}</span>
+                <small> on </small> <span className="album">{albumPlaying.title}</span>
+              </div>
+            )
           }
         </div>
       </div>
@@ -45,10 +57,6 @@ SongPlaying.propTypes = {
     }),
     artistPlaying: PropTypes.shape({
       name: PropTypes.string.isRequired
-    }),
-    player: PropTypes.shape({
-      duration: PropTypes.number.isRequired,
-      position: PropTypes.number.isRequired
     }),
     focusPlayingSongInLibrary: PropTypes.func.isRequired
   })

@@ -15,34 +15,6 @@ export class Playlist extends Component {
     return `${minutes}:${_seconds < 10 ? '0' : ''}${_seconds}`
   }
 
-  /**
-   * Generate the list of songs to be displayed
-   * @return {Array} Array of songs
-   */
-  static listSongsToDisplay ({playlist, songPlaying}) {
-    const songPlayingId = songPlaying ? songPlaying._id : null
-    // const needDetails = props.filter && props.artistSelected === null
-    const songs = playlist.songs
-
-    return songs.map((song, index) => {
-      var cssClasses = null
-
-      if (playlist.songsSelected.indexOf(song._id) > -1) {
-        cssClasses = songPlayingId === song._id ? 'selected playing' : 'selected'
-      }
-      else if (songPlayingId === song._id) {
-        cssClasses = 'playing'
-      }
-
-      return (
-        <li key={`${song._id}-${index}`} data-song-id={song._id} data-index={index} className={cssClasses}>
-          <span className="playlist-title">{song.trackNr + '. ' + song.title}</span>
-          <span className="playlist-duration">{song.duration > 0 ? Playlist.convertTime(song.duration) : ''}</span>
-        </li>
-      )
-    })
-  }
-
   static getSongIndex (clickEvent) {
     let dataset = clickEvent.target.dataset
     if (typeof dataset.index === 'undefined') {
@@ -67,31 +39,34 @@ export class Playlist extends Component {
   }
 
   playSong (event) {
-    this.props.playSongFromPlaylist(Playlist.getSongIndex(event))
+    this.props.player.playFromPlaylistAt(Playlist.getSongIndex(event))
   }
 
   createMenu (event) {
-    const songID = Playlist.getSongId(event)
+    const {player, uiStore} = this.props
+    const songIndex = Playlist.getSongIndex(event)
     const actions = {
-      removeFromPlaylist: this.props.playlist.removeFromPlaylist
+      removeFromPlaylist () {
+        player.removeSongsFromPlaylist([songIndex])
+      }
     }
-    playlistContextMenu.showPlaylistMenu(songID, actions)
-    this.props.playlist.setSongsSelected([songID])
+    uiStore.setSongSelectedInPlaylist(songIndex)
+    playlistContextMenu.showPlaylistMenu(actions)
   }
 
   setSongSelectedInPlaylist (event) {
-    const songID = Playlist.getSongId(event)
-    this.props.playlist.setSongsSelected([songID])
+    const songIndex = Playlist.getSongIndex(event)
+    this.props.uiStore.setSongSelectedInPlaylist(songIndex)
   }
 
   render () {
-    const {playlist} = this.props
+    const {playlist, uiStore} = this.props
     return (
       <div className="playlist">
         <h3>Playlist
           <button type="text" disabled={playlist.songs.length === 0}
             className="btn-inverse btn-narrow float-right"
-            onClick={playlist.emptyPlaylist}>Empty
+            onClick={playlist.clear}>Empty
           </button>
         </h3>
         <div className="songs">
@@ -99,7 +74,22 @@ export class Playlist extends Component {
             onClick={this.setSongSelectedInPlaylist}
             onDoubleClick={this.playSong}
             onContextMenu={this.createMenu}>
-            {Playlist.listSongsToDisplay(this.props)}
+            {playlist.songs.map((song, index) => {
+              var cssClasses = null
+
+              if (uiStore.indexOfSongSelectedInPlaylist === index) {
+                cssClasses = playlist.currentIndex === index ? 'selected playing' : 'selected'
+              }
+              else if (playlist.currentIndex === index) {
+                cssClasses = 'playing'
+              }
+              return (
+                <li key={`${song._id}-${index}`} data-song-id={song._id} data-index={index} className={cssClasses}>
+                  <span className="playlist-title">{song.trackNr + '. ' + song.title}</span>
+                  <span className="playlist-duration">{song.duration > 0 ? Playlist.convertTime(song.duration) : ''}</span>
+                </li>
+              )
+            })}
           </ul>
         </div>
       </div>
@@ -107,24 +97,27 @@ export class Playlist extends Component {
   }
 }
 
-export default inject(({appStore}) => ({
+export default inject(({appStore, uiStore}) => ({
+  uiStore,
+  player: appStore.player,
   songPlaying: appStore.songPlaying,
-  playlist: appStore.playlist,
-  playSongFromPlaylist: appStore.playSongFromPlaylist
+  playlist: appStore.player.playlist,
 }))(observer(Playlist))
 
 Playlist.propTypes = {
-  playSongFromPlaylist: PropTypes.func.isRequired,
-  songPlaying: PropTypes.shape({
-    _id: PropTypes.number
-  }),
+  uiStore: PropTypes.shape({
+    indexOfSongSelectedInPlaylist: PropTypes.number.isRequired,
+    setSongSelectedInPlaylist: PropTypes.func.isRequired,
+  }).isRequired,
+  player: PropTypes.shape({
+    playFromPlaylistAt: PropTypes.func.isRequired,
+    removeSongsFromPlaylist: PropTypes.func.isRequired,
+  }).isRequired,
   playlist: PropTypes.shape({
     songs: PropTypes.arrayOf(PropTypes.shape({
       _id: PropTypes.number.isRequired
     })).isRequired,
-    emptyPlaylist: PropTypes.func.isRequired,
-    songsSelected: PropTypes.arrayOf(PropTypes.number).isRequired,
-    setSongsSelected: PropTypes.func.isRequired,
-    removeFromPlaylist: PropTypes.func.isRequired
+    clear: PropTypes.func.isRequired,
+    removeSongsAt: PropTypes.func.isRequired,
   }).isRequired
 }

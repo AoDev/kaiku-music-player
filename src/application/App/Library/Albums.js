@@ -4,8 +4,9 @@ import _ from 'lodash'
 import {mediaLibrary} from 'app-services'
 import {observer, inject} from 'mobx-react'
 import libraryContextMenus from './libraryContextMenus'
+import {defaultCover} from 'app-images'
 
-const {COVER_FOLDER, COVER_DEFAULT} = mediaLibrary
+const {COVER_FOLDER} = mediaLibrary
 
 export class Albums extends Component {
   /**
@@ -45,7 +46,7 @@ export class Albums extends Component {
     const sortedAlbums = _.sortBy(library.albums, ['artistID', 'year'])
 
     return sortedAlbums.map((album) => {
-      const cover = album.cover ? `${COVER_FOLDER}/${album._id}.${album.cover}` : COVER_DEFAULT
+      const cover = album.cover ? `${COVER_FOLDER}/${album._id}.${album.cover}` : defaultCover
       var cssClasses = null
 
       if (library.albumSelected === album) {
