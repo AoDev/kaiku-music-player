@@ -1,21 +1,16 @@
 import _ from 'lodash'
 import {ipcpRenderer} from 'electron-ipcp'
-import {musicPlayer, mediaLibrary} from 'app-services'
+import {mediaLibrary} from 'app-services'
 import * as mobx from 'mobx'
-import Playlist from './PlaylistModel'
-import Player from './PlayerModel'
+import MusicPlayerExtended from './MusicPlayerExtended'
 import Settings from './SettingsModel'
 import Library from './LibraryModel'
 import Scan from './ScanModel'
 
-const {observable, action} = mobx
+const {action, computed} = mobx
 
 export default class AppStore {
   appName = 'Kaiku'
-
-  @observable.ref songPlaying = null
-  @observable.ref albumPlaying = null
-  @observable.ref artistPlaying = null
 
   @action.bound assign (props) {
     Object.assign(this, props)
@@ -23,29 +18,28 @@ export default class AppStore {
 
   @action.bound addArtistToPlaylist (artistID) {
     const songs = this.library.getArtistSongs(artistID)
-    this.playlist.addSongs(songs)
+    this.player.playlist.addSongs(songs)
   }
 
   @action.bound addAlbumToPlaylist (albumID) {
     const songs = this.library.getAlbumSongs(albumID)
-    this.playlist.addSongs(songs)
+    this.player.playlist.addSongs(songs)
   }
 
   @action.bound addSongToPlaylist (songID) {
     const song = _.find(this.library._songs, {_id: songID})
-    this.playlist.addSongs([song])
+    this.player.playlist.addSongs([song])
   }
 
   @action.bound playSongs (songs) {
-    this.playlist.setSongs(songs)
-    musicPlayer.play()
+    this.player.playSongs(songs)
 
     const shouldGetDuration = songs.some((song) => song.duration === 0)
 
     if (shouldGetDuration) {
       ipcpRenderer.sendMain('getSongsDuration', songs)
         .then((songsWithDuration) => {
-          this.playlist.set('songs', songsWithDuration)
+          this.player.playlist.setSongs(songsWithDuration)
           mediaLibrary.updateSongs(songsWithDuration) // Save in DB (fire and forget)
         })
     }
@@ -78,10 +72,25 @@ export default class AppStore {
     this.playSongs(songs)
   }
 
-  @action.bound setSongPlaying (songID) {
-    this.songPlaying = this.library._songs[songID - 1]
-    this.artistPlaying = this.library._artists[this.songPlaying.artistID - 1]
-    this.albumPlaying = this.library._albums[this.songPlaying.albumID - 1]
+  @computed get songPlaying () {
+    if (this.player.song) {
+      return this.library._songs[this.player.song._id - 1]
+    }
+    return null
+  }
+
+  @computed get artistPlaying () {
+    if (this.songPlaying) {
+      return this.library._artists[this.songPlaying.artistID - 1]
+    }
+    return null
+  }
+
+  @computed get albumPlaying () {
+    if (this.songPlaying) {
+      return this.library._albums[this.songPlaying.albumID - 1]
+    }
+    return null
   }
 
   /**
@@ -117,7 +126,7 @@ export default class AppStore {
    * @param  {Number} playlistSongIndex
    */
   @action.bound playSongFromPlaylist (playlistSongIndex) {
-    musicPlayer.play(playlistSongIndex)
+    this.player.play(playlistSongIndex)
   }
 
   /**
@@ -137,21 +146,14 @@ export default class AppStore {
    */
   @action.bound clearLibrary () {
     this.library.clearLibrary()
-    this.playlist.emptyPlaylist()
-    musicPlayer.stop()
-    this.assign({songPlaying: null, albumPlaying: null, artistPlaying: null})
+    this.player.playlist.clear()
+    this.player.stop()
   }
 
   constructor (options) {
     this.settings = new Settings()
     this.library = new Library()
     this.scan = new Scan()
-    this.player = new Player()
-    this.playlist = new Playlist()
-
-    /**
-     * Setup some actions that should happen based on the player lib events.
-     */
-    musicPlayer.on('play', this.setSongPlaying)
+    this.player = new MusicPlayerExtended()
   }
 }

@@ -47,19 +47,23 @@ if (module.hot) {
 // Listen for events from main process through IPC
 ipcRenderer.on('toggleSettings', appStore.settings.toggle)
 ipcRenderer.on('playPause', appStore.player.playPause)
-ipcRenderer.on('NextInPlaylist', appStore.player.nextInPlaylist)
-ipcRenderer.on('PrevInPlaylist', appStore.player.prevInPlaylist)
+ipcRenderer.on('NextInPlaylist', appStore.player.playNext)
+ipcRenderer.on('PrevInPlaylist', appStore.player.playPrevious)
 
 ipcRenderer.on('VolumeUp', function () {
-  appStore.player.setVolume(null, 'up')
+  const {player} = appStore
+  const newVolume = player.volume + 0.02
+  player.setVolume(newVolume > 1 ? 1 : newVolume)
 })
 
 ipcRenderer.on('VolumeDown', function () {
-  appStore.player.setVolume(null, 'down')
+  const {player} = appStore
+  const newVolume = player.volume - 0.02
+  player.setVolume(newVolume < 0 ? 0 : newVolume)
 })
 
 ipcRenderer.on('VolumeMute', function () {
-  appStore.player.setVolume(0)
+  appStore.player.toggleMute()
 })
 
 ipcRenderer.on('search', function () {

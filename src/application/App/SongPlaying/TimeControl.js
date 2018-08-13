@@ -3,17 +3,10 @@ import React, {Component} from 'react'
 import {observer} from 'mobx-react'
 import utils from 'app-utils'
 
-@observer
-export default class TimeControl extends Component {
-  /**
-   * Generate a string for a time in seconds. like 6:30
-   * @param  {Number} seconds
-   * @return {String}
-   */
-  static convertTime (seconds) {
-    var minutes = Math.floor(seconds / 60)
-    var _seconds = Math.floor(seconds % 60)
-    return `${minutes}:${_seconds < 10 ? '0' : ''}${_seconds}`
+export class TimeControl extends Component {
+  static formatTime (time) {
+    const seconds = time.seconds < 10 ? '0' + time.seconds : time.seconds
+    return `${time.minutes}:${seconds}`
   }
 
   constructor (props) {
@@ -22,17 +15,23 @@ export default class TimeControl extends Component {
   }
 
   setPosition (event) {
+    const {player} = this.props
     const element = event.currentTarget
     const width = element.offsetWidth
     const clickX = utils.getClickPosition(event).x
     const relativePosition = clickX / width
-    this.props.player.goToSongPosition(relativePosition)
+    player.sound.goToPosition(player.sound.duration * relativePosition)
   }
 
   render () {
-    const {position, duration} = this.props.player
-    const progressStyle = {width: utils.percentage(position, duration, 6) + '%'}
-    const time = `${TimeControl.convertTime(position)} / ${TimeControl.convertTime(duration)}`
+    const {sound} = this.props.player
+    let progressStyle = {width: 0}
+    let time = '∞ / ∞'
+    if (sound) {
+      const {positionInMinSec, durationInMinSec} = sound
+      progressStyle.width = sound.positionInPercent + '%'
+      time = `${TimeControl.formatTime(positionInMinSec)} / ${TimeControl.formatTime(durationInMinSec)}`
+    }
 
     return (
       <div className="timeline">
@@ -48,18 +47,16 @@ export default class TimeControl extends Component {
 
 TimeControl.propTypes = {
   player: PropTypes.shape({
-    position: PropTypes.number.isRequired,
-    duration: PropTypes.number.isRequired,
-    goToSongPosition: PropTypes.func.isRequired
+    sound: PropTypes.shape({
+      duration: PropTypes.number.isRequired,
+      positionInPercent: PropTypes.number.isRequired,
+      positionInMinSec: PropTypes.shape({
+      }).isRequired,
+      durationInMinSec: PropTypes.shape({
+      }).isRequired,
+      goToPosition: PropTypes.func.isRequired,
+    }),
   }).isRequired
 }
 
-TimeControl.defaultProps = {
-  // These are set because sometimes it happens that the player lib emits
-  // unvalid values or the appStore is kind of in an unstable state.
-  // Needs more investigation but in the meantime, keep this default.
-  player: {
-    position: 0,
-    duration: 0
-  }
-}
+export default observer(TimeControl)

@@ -12,7 +12,6 @@ const path = remote.require('path')
 const libraryScanner = remote.require('../main/libraryScanner')
 
 export const COVER_FOLDER = path.join(remote.app.getPath('userData'), 'covers')
-export const COVER_DEFAULT = './images/default-cover.svg'
 
 /**
  * Artists, Albums and Songs must be ordered by _id.
@@ -273,7 +272,6 @@ function stopScan () {
 
 export default {
   clearLibrary,
-  COVER_DEFAULT,
   COVER_FOLDER,
   findAlbums,
   findArtists,

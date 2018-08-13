@@ -5,6 +5,8 @@ import cn from 'classnames'
 const {observable, computed, action} = mobx
 
 export default class UIStore {
+  @observable indexOfSongSelectedInPlaylist = -1
+
   @observable.ref viewportSize = {
     width: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
     height: Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
@@ -17,6 +19,10 @@ export default class UIStore {
     return cn({
       'dimensions-locked': this.settingsVisible,
     })
+  }
+
+  @action.bound setSongSelectedInPlaylist (index) {
+    this.indexOfSongSelectedInPlaylist = index
   }
 
   @action.bound set (prop, value) {

@@ -11,14 +11,14 @@ import Repeat from './Repeat'
 
 export class PlayerControls extends Component {
   render () {
-    const {player, playlist} = this.props
+    const {player} = this.props
     return (
       <div className="player-controls">
-        <Previous prevInPlaylist={player.prevInPlaylist}/>
+        <Previous playPrevious={player.playPrevious}/>
         <Play isPlaying={player.isPlaying} playPause={player.playPause}/>
-        <Next nextInPlaylist={player.nextInPlaylist}/>
-        <Shuffle shufflePlaylist={playlist.shufflePlaylist}/>
-        <Repeat repeat={player.repeat} toggleRepeat={player.toggleRepeat}/>
+        <Next nextInPlaylist={player.playNext}/>
+        <Shuffle shufflePlaylist={player.shuffle}/>
+        <Repeat repeat={player.playlist.repeatMode} toggleRepeat={player.playlist.toggleRepeat}/>
         <Volume intensity={player.volume} setVolume={player.setVolume}/>
       </div>
     )
@@ -27,21 +27,20 @@ export class PlayerControls extends Component {
 
 export default inject(({appStore}) => ({
   player: appStore.player,
-  playlist: appStore.playlist
 }))(observer(PlayerControls))
 
 PlayerControls.propTypes = {
   player: PropTypes.shape({
-    repeat: PropTypes.oneOf(['off', 'repeatOne', 'repeatAll']),
     isPlaying: PropTypes.bool.isRequired,
     volume: PropTypes.number.isRequired,
-    prevInPlaylist: PropTypes.func.isRequired,
-    nextInPlaylist: PropTypes.func.isRequired,
+    playPrevious: PropTypes.func.isRequired,
+    playNext: PropTypes.func.isRequired,
     playPause: PropTypes.func.isRequired,
     setVolume: PropTypes.func.isRequired,
-    toggleRepeat: PropTypes.func.isRequired
+    shuffle: PropTypes.func.isRequired,
+    playlist: PropTypes.shape({
+      repeatMode: PropTypes.oneOf(['off', 'repeatOne', 'repeatAll']).isRequired,
+      toggleRepeat: PropTypes.func.isRequired,
+    }).isRequired,
   }).isRequired,
-  playlist: PropTypes.shape({
-    shufflePlaylist: PropTypes.func.isRequired
-  })
 }
