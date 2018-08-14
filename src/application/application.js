@@ -83,7 +83,7 @@ mobx.reaction(() => {
     ? ''
     : `
     body {
-      background-image: url(${appStore.settings.backgroundImage});
+      background-image: url(file://${appStore.settings.backgroundImage});
       background-size: cover;
     }
   `

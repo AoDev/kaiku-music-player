@@ -4,6 +4,7 @@
 
 const path = require('path')
 const webpack = require('webpack')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 const appPackage = require('./app/package')
 const externals = Object.keys(appPackage.dependencies || {})
 
@@ -31,6 +32,9 @@ module.exports = {
   externals,
 
   plugins: [
+    new CleanWebpackPlugin([
+      path.join('app', 'main', 'main.dist.*'),
+    ]),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production')

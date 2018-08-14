@@ -1,11 +1,18 @@
 /**
  * Base webpack config used across other specific configs
  */
-
 const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 const ROOT_FOLDER = __dirname
 const SRC_FOLDER = path.join(ROOT_FOLDER, 'src')
+const APP_FOLDER = path.join(ROOT_FOLDER, 'app')
+
+const mainContentPolicy = {
+  production: "script-src 'self'",
+  development: "script-src 'self' 'unsafe-eval'",
+}
 
 module.exports = {
   module: {
@@ -43,9 +50,6 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'app'),
     filename: '[name].js',
-
-    // https://github.com/webpack/webpack/issues/1114
-    libraryTarget: 'commonjs2'
   },
 
   optimization: {
@@ -57,7 +61,10 @@ module.exports = {
           chunks: 'all'
         }
       }
-    }
+    },
+    runtimeChunk: {
+      name: 'manifest',
+    },
   },
 
   // https://webpack.github.io/docs/configuration.html#resolve
@@ -74,5 +81,17 @@ module.exports = {
     mainFields: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main']
   },
 
-  plugins: [],
+  plugins: [
+    new CleanWebpackPlugin([
+      path.join('app', 'dist'),
+    ]),
+    new HtmlWebpackPlugin({
+      filename: 'index.html',
+      template: path.join(APP_FOLDER, 'main', 'index.html'),
+      chunks: ['manifest', 'vendors', 'bundle'],
+      templateParameters: {
+        contentPolicy: mainContentPolicy[process.env.NODE_ENV]
+      }
+    }),
+  ],
 }

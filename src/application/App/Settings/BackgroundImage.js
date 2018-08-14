@@ -7,7 +7,7 @@ const btnStyles = {top: '85px', left: '88px'}
 export default function BackgroundImage (props) {
   const {backgroundImage} = props
   const image = backgroundImage || bgPlaceholder
-  const thumbStyle = {backgroundImage: `url(${image})`}
+  const thumbStyle = {backgroundImage: `url(file://${image})`}
 
   return (
     <div>

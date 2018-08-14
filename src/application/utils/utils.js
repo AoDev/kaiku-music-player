@@ -58,7 +58,7 @@ function percentage (part, total, precision) {
  */
 function getAlbumCover (album) {
   return (album && album.cover)
-    ? COVER_FOLDER + '/' + album._id + '.' + album.cover
+    ? `file://${COVER_FOLDER}/${album._id}.${album.cover}`
     : defaultCover
 }
 
