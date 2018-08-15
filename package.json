@@ -47,11 +47,17 @@
   "keywords": [
     "kaiku",
     "music",
+    "audio",
     "player",
     "electron",
     "react",
     "node",
-    "mobx"
+    "mobx",
+    "howler",
+    "html5",
+    "mp3",
+    "windows",
+    "mac"
   ],
   "homepage": "https://github.com/AoDev/kaiku-music-player",
   "devDependencies": {
