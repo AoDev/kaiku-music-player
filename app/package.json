@@ -1,7 +1,7 @@
 {
   "name": "Kaiku",
   "productName": "Kaiku",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Kaiku Music Player",
   "main": "./main/main.dist.js",
   "author": {
