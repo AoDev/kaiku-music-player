@@ -21,7 +21,7 @@
     "package:win": "npm run compile && build --win --x64 --publish never --config electron-builder.config.js",
     "postinstall": "electron-builder install-app-deps",
     "profile:renderer": "npm run compile:renderer -- --profile --json > webpack.stats.json",
-    "tag-release": "npm --prefix ./app run bump-version && git add ./app/package.json && standard-version -a",
+    "tag-release": "npm --prefix ./app run bump-version && git add ./app/package.json ./app/package-lock.json && standard-version -a",
     "start-hot": "cross-env HOT=1 NODE_ENV=development electron -r @babel/register -r @babel/polyfill ./app/main/main.js",
     "start": "cross-env NODE_ENV=production electron ./app/",
     "test": "jest",
