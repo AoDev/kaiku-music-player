@@ -64,19 +64,20 @@ describe('Playlist', () => {
       expect(playlist.currentSong).toBeNull()
     })
 
-    it('should NOT do anything if the repeat mode is "repeatOne"', () => {
+    it('should NOT do anything if it is the last song and repeat mode is "off"', () => {
+      playlist.setSongs(songsMock)
+      playlist.selectSong(2)
+      const result = playlist.goToNext()
+      expect(result).toBe(-1)
+      expect(playlist.currentIndex).toBe(2)
+    })
+
+    it('should return the current song index if the repeat mode is "repeatOne"', () => {
       playlist.setSongs(songsMock)
       playlist.selectSong(1)
       playlist.setRepeat('repeatOne')
       playlist.goToNext()
       expect(playlist.currentIndex).toBe(1)
-    })
-
-    it('should NOT do anything if it is the last song and repeat mode is "off"', () => {
-      playlist.setSongs(songsMock)
-      playlist.selectSong(2)
-      playlist.goToNext()
-      expect(playlist.currentIndex).toBe(2)
     })
 
     it('should select first song if the repeat mode is "repeatAll" and it is the last song', () => {
@@ -103,7 +104,7 @@ describe('Playlist', () => {
       expect(playlist.currentSong).toBeNull()
     })
 
-    it('should NOT do anything if the repeat mode is "repeatOne"', () => {
+    it('should stay at the current song (index) if the repeat mode is "repeatOne"', () => {
       playlist.setSongs(songsMock)
       playlist.selectSong(1)
       playlist.setRepeat('repeatOne')
@@ -114,7 +115,8 @@ describe('Playlist', () => {
     it('should NOT do anything if it is the first song and repeat mode is "off"', () => {
       playlist.setSongs(songsMock)
       playlist.selectSong(0)
-      playlist.goToPrev()
+      const result = playlist.goToPrev()
+      expect(result).toBe(-1)
       expect(playlist.currentIndex).toBe(0)
     })
 

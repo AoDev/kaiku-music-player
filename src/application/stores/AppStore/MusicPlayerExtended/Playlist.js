@@ -59,38 +59,42 @@ export default class Playlist {
    * @returns {Number} index of the next song. -1 if can't go next.
    */
   @action.bound goToNext () {
-    if (!this.isEmpty) {
-      if (this.repeatMode === 'repeatOne') {
-        return this.currentIndex
-      }
-      else if (!this.isLastSong) {
-        this.currentIndex++
-      }
-      else if (this.repeatMode === 'repeatAll') {
-        this.currentIndex = 0
-      }
-      return this.currentIndex
+    let newIndex = -1
+    if (this.isEmpty || (this.isLastSong && this.repeatMode === 'off')) {
+      return -1
     }
-    return -1
+    if (this.repeatMode === 'repeatOne') {
+      newIndex = this.currentIndex
+    }
+    else if (this.repeatMode === 'repeatAll' && this.isLastSong) {
+      newIndex = 0
+    }
+    else if (!this.isLastSong) {
+      newIndex = this.currentIndex + 1
+    }
+    this.currentIndex = newIndex
+    return newIndex
   }
 
   /**
    * @returns {Number} index of the previous song. -1 if can't go previous.
    */
   @action.bound goToPrev () {
-    if (!this.isEmpty) {
-      if (this.repeatMode === 'repeatOne') {
-        return this.currentIndex
-      }
-      else if (!this.isFirstSong) {
-        this.currentIndex--
-      }
-      else if (this.repeatMode === 'repeatAll') {
-        this.currentIndex = this.songs.length - 1
-      }
-      return this.currentIndex
+    let newIndex = -1
+    if (this.isEmpty || (this.isFirstSong && this.repeatMode === 'off')) {
+      return -1
     }
-    return -1
+    if (this.repeatMode === 'repeatOne') {
+      newIndex = this.currentIndex
+    }
+    else if (this.repeatMode === 'repeatAll' && this.isFirstSong) {
+      newIndex = this.songs.length - 1
+    }
+    else if (!this.isFirstSong) {
+      newIndex = this.currentIndex - 1
+    }
+    this.currentIndex = newIndex
+    return newIndex
   }
 
   /**
