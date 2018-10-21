@@ -68,7 +68,7 @@ function register (mainWindow) {
   })
 
   ipcpMain.on('getSongMetadata', async (event, song, options = {}) => {
-    const metadata = await libraryScanner.readMetadata(song.filePath, {...options, duration: true})
+    const metadata = await libraryScanner.readMetadata(song.filePath, Object.assign({}, options, {duration: true}))
     event.respond(metadata)
   })
 
