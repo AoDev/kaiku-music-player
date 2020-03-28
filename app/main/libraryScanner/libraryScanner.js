@@ -56,13 +56,13 @@ function scanSongsDir (songsDir, onSongData, onScanComplete) {
   found = 0
 
   function processSongFile (songFilePath, qNext) {
-    processed++
     // process.stdout.write(processed + '/' + found + '\r')
     readMetadata(songFilePath, batchScanOptions)
       .then((metadata) => {
         onSongData(metadata, qNext)
       })
       .catch(() => qNext())
+      .finally(() => processed++)
   }
 
   q = fastq(processSongFile, 1)

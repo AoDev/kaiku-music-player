@@ -97,28 +97,22 @@ export default class AppStore {
    * Use the library service to scan songs on the computer
    * @param  {Array of Strings} songsFolders
    */
-  @action.bound scanForSongs (songsFolders) {
+  @action.bound async scanForSongs (songsFolders) {
     const start = Date.now()
     const timer = setInterval(this.scan.updateScanProgress, 150)
-    this.scan.inProgress = true
+    this.scan.set('inProgress', true)
 
-    mediaLibrary.clearLibrary()
-      .then(mediaLibrary.init)
-      .then(() => {
-        mediaLibrary.scan(songsFolders, (err, results) => {
-          if (err) {
-            console.log(err)
-          }
-          clearInterval(timer)
-          mobx.runInAction(() => {
-            this.scan.inProgress = false
-            this.scan.timeElapsed = Date.now() - start
-            this.library._artists = results._artists
-            this.library._albums = results._albums
-            this.library._songs = results._songs
-          })
-        })
-      })
+    await mediaLibrary.clearLibrary()
+    await mediaLibrary.init()
+
+    mediaLibrary.scan(songsFolders, (err, results) => {
+      if (err) {
+        console.log(err)
+      }
+      clearInterval(timer)
+      this.scan.assign({inProgress: false, timeElapsed: Date.now() - start})
+      this.library.assign(results) // {_artists, _albums, _songs}
+    })
   }
 
   /**

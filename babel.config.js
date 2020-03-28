@@ -1,6 +1,19 @@
 module.exports = {
   'plugins': [
     [
+      'module-resolver',
+      {
+        'alias': {
+          'ui-framework': './src/ui-framework',
+          'app-images': './src/assets/images',
+          'app-lib': './src/application/lib',
+          'app-utils': './src/application/lib/utils',
+          'app-services': './src/application/services',
+          'shared-components': './src/application/shared-components'
+        }
+      }
+    ],
+    [
       '@babel/plugin-proposal-decorators',
       {
         'legacy': true

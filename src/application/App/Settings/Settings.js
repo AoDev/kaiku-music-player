@@ -55,12 +55,12 @@ export class Settings extends Component {
     this.showClearLibraryDialog = this.showClearLibraryDialog.bind(this)
     this.onFolderSelected = this.onFolderSelected.bind(this)
     this.onBgImageSelected = this.onBgImageSelected.bind(this)
-    this.scanForSongs = this.scanForSongs.bind(this)
+    this.triggerScanForSongs = this.triggerScanForSongs.bind(this)
     this.removeSongsFolder = this.removeSongsFolder.bind(this)
     this.cancelScan = this.cancelScan.bind(this)
   }
 
-  scanForSongs () {
+  triggerScanForSongs () {
     const {scanForSongs, settings} = this.props
     scanForSongs(settings.songsFolders)
   }
@@ -155,7 +155,7 @@ export class Settings extends Component {
                       ? <button className="space-right-1" onClick={this.cancelScan}>
                         Cancel scan
                       </button>
-                      : <button className="space-right-1" onClick={this.scanForSongs}>
+                      : <button className="space-right-1" onClick={this.triggerScanForSongs}>
                         Find songs
                       </button>
                     }

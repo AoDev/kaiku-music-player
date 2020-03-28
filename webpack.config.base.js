@@ -6,7 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 const ROOT_FOLDER = __dirname
-const SRC_FOLDER = path.join(ROOT_FOLDER, 'src')
+// const SRC_FOLDER = path.join(ROOT_FOLDER, 'src')
 const APP_FOLDER = path.join(ROOT_FOLDER, 'app')
 
 const mainContentPolicy = {
@@ -69,14 +69,6 @@ module.exports = {
 
   // https://webpack.github.io/docs/configuration.html#resolve
   resolve: {
-    alias: {
-      'ui-framework': path.join(SRC_FOLDER, 'ui-framework'),
-      'app-utils': path.join(SRC_FOLDER, 'application', 'utils'),
-      'app-services': path.join(SRC_FOLDER, 'application', 'services'),
-      'app-images': path.join(SRC_FOLDER, 'images'),
-      'shared-components': path.join(SRC_FOLDER, 'application', 'shared-components'),
-    },
-
     extensions: ['.js', '.jsx', '.json'],
     mainFields: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main']
   },

@@ -9,6 +9,14 @@ export default class Scan {
   @observable found = 0
   @observable processed = 0
 
+  @action.bound set (prop, value) {
+    this[prop] = value
+  }
+
+  @action.bound assign (props) {
+    Object.assign(this, props)
+  }
+
   /**
    * Set the progress state from the media library scanner
    */

@@ -1,5 +1,6 @@
 import * as mobx from 'mobx'
 import _ from 'lodash'
+import MediaLibraryDb from 'app-lib/MediaLibraryDb'
 import {mediaLibrary} from 'app-services'
 
 const {observable, action, computed} = mobx
@@ -137,6 +138,14 @@ export default class Library {
     }
 
     return songs
+  }
+
+  @action.bound set (prop, value) {
+    this[prop] = value
+  }
+
+  @action.bound assign (props) {
+    Object.assign(this, props)
   }
 
   @action.bound setArtists (artists) {
@@ -325,6 +334,8 @@ export default class Library {
   }
 
   constructor () {
+    this.db = new MediaLibraryDb()
+
     /**
      * Watch the search filter and focus / unfocus items in the library
      * If the filter is less precise (user is deleting), then if there is
